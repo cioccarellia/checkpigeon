@@ -69,3 +69,8 @@ outTmp/
 /test.output
 /kotlin-native/dist
 kotlin-ide/
+/core/logic/build/
+/core/checkpigeon/build/
+/ext/binary/build/
+/ext/cli/build/
+/ext/server/build/

@@ -17,9 +17,9 @@ dependencies {
     implementation(project(":core:logic"))
     implementation(project(":core:checkpigeon"))
     testImplementation(kotlin("test"))
-    implementation("io.ktor:ktor-server-netty:1.6.0")
-    implementation("io.ktor:ktor-html-builder:1.6.0")
-    implementation("org.jetbrains.kotlinx:kotlinx-html-jvm:0.7.2")
+    implementation("io.ktor:ktor-server-netty:1.6.4")
+    implementation("io.ktor:ktor-html-builder:1.6.4")
+    implementation("org.jetbrains.kotlinx:kotlinx-html-jvm:0.7.3")
 }
 
 tasks.test {
