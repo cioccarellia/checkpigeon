@@ -16,7 +16,10 @@ repositories {
 dependencies {
     implementation(project(":core:logic"))
     implementation(project(":core:checkpigeon"))
+
     testImplementation(kotlin("test"))
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.5.2")
+
     implementation("io.ktor:ktor-server-netty:1.6.4")
     implementation("io.ktor:ktor-html-builder:1.6.4")
     implementation("org.jetbrains.kotlinx:kotlinx-html-jvm:0.7.3")

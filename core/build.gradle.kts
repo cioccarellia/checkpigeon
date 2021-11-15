@@ -8,7 +8,6 @@ group = "com.cioccarellia"
 version = "1.0.0"
 
 
-
 tasks.withType<KotlinCompile>() {
     kotlinOptions.jvmTarget = "1.8"
 }

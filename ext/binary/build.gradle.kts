@@ -11,7 +11,9 @@ version = "1.0.0"
 dependencies {
     implementation(project(":core:logic"))
     implementation(project(":core:checkpigeon"))
+
     testImplementation(kotlin("test"))
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.5.2")
 }
 
 tasks.test {
