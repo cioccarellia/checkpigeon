@@ -4,15 +4,15 @@ import com.cioccarellia.checkpigeon.logic.model.board.Coordinate
 import com.cioccarellia.checkpigeon.logic.model.tile.TileColor
 
 data class Move(
-    val moveType: MoveType,
-    val playingColor: TileColor,
+    override val moveType: MoveType,
+    override val playingColor: TileColor,
 
-    val start: Coordinate,
-    val end: Coordinate,
+    override val start: Coordinate,
+    override val end: Coordinate,
 
-    val captures: List<Coordinate>,
-    val blows: Pair<Coordinate, Coordinate>,
-) {
+    override val captures: List<Coordinate>,
+    override val blows: Pair<Coordinate, Coordinate>,
+) : MoveUnit() {
     /**
      * Generates movetext for the given move
      * */

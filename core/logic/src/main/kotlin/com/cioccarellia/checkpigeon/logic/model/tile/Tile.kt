@@ -8,7 +8,7 @@ import com.cioccarellia.checkpigeon.logic.model.material.Material
  * */
 data class Tile(
     val coordinate: Coordinate,
-    val material: Material
+    var material: Material
 ) {
    val color: TileColor
         get() = if (coordinate.parity) TileColor.BLACK else TileColor.WHITE

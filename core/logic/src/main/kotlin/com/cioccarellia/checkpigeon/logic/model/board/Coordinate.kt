@@ -25,15 +25,15 @@ data class Coordinate(
             if (!parity) return 0
 
             // Rank weight
-            val inverseRank = (8 - rank.value)
+            val inverseRank = (8 - rank.number)
             val weight = 4 * inverseRank
 
             // Steps 2 adjacent squares unit
-            val step = when (file.value) {
-                Files.A, Files.B -> 1
-                Files.C, Files.D -> 2
-                Files.E, Files.F -> 3
-                Files.G, Files.H -> 4
+            val step = when (file.letter) {
+                FileLetter.A, FileLetter.B -> 1
+                FileLetter.C, FileLetter.D -> 2
+                FileLetter.E, FileLetter.F -> 3
+                FileLetter.G, FileLetter.H -> 4
             }
 
             return weight + step
