@@ -1,6 +1,9 @@
-package com.cioccarellia.checkpigeon.logic.model.move
+package com.cioccarellia.checkpigeon.logic.model.move.linear
 
 import com.cioccarellia.checkpigeon.logic.model.board.Coordinate
+import com.cioccarellia.checkpigeon.logic.model.move.MoveType
+import com.cioccarellia.checkpigeon.logic.model.move.MoveUnit
+import com.cioccarellia.checkpigeon.logic.model.move.symbol
 import com.cioccarellia.checkpigeon.logic.model.tile.TileColor
 
 data class Move(
@@ -28,10 +31,10 @@ data class Move(
             append(
                 when (moveType) {
                     // marks start and end explicitly
-                    is Movement -> "${start}-${end}"
+                    is MoveType.Movement -> "${start}-${end}"
 
                     // end coordinates are inferred
-                    is Capture -> "${start}x${captureText}"
+                    is MoveType.Capture -> "${start}x${captureText}"
                 }
             )
         }
@@ -42,5 +45,5 @@ data class Move(
      * Generates draught notation for the given move
      * */
     fun draughtNotation(): String =
-        start.checkersCoordinateNumber.toString() + moveType.symbol + end.checkersCoordinateNumber.toString()
+        start.checkersCoordinateNumber.toString() + moveType.symbol() + end.checkersCoordinateNumber.toString()
 }

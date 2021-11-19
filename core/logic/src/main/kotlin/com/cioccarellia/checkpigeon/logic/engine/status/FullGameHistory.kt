@@ -1,6 +1,6 @@
 package com.cioccarellia.checkpigeon.logic.engine.status
 
-import com.cioccarellia.checkpigeon.logic.model.move.VerboseMove
+import com.cioccarellia.checkpigeon.logic.model.move.verbose.VerboseMove
 import com.cioccarellia.checkpigeon.logic.model.tile.TileColor.BLACK
 import com.cioccarellia.checkpigeon.logic.model.tile.TileColor.WHITE
 

@@ -4,7 +4,7 @@ import com.cioccarellia.checkpigeon.logic.model.board.Coordinate
 import com.cioccarellia.checkpigeon.logic.model.board.File
 import com.cioccarellia.checkpigeon.logic.model.board.Rank
 import com.cioccarellia.checkpigeon.logic.model.material.Material
-import com.cioccarellia.checkpigeon.logic.model.move.Move
+import com.cioccarellia.checkpigeon.logic.model.move.linear.Move
 import com.cioccarellia.checkpigeon.logic.model.tile.Tile
 import com.cioccarellia.checkpigeon.logic.model.tile.TileColor
 

@@ -1,13 +1,11 @@
 package com.cioccarellia.checkpigeon.logic.model.move
 
 sealed class MoveType {
-    abstract val symbol: String
+    object Movement : MoveType()
+    object Capture : MoveType()
 }
 
-class Movement : MoveType() {
-    override val symbol = "-"
-}
-
-class Capture : MoveType() {
-    override val symbol = "x"
+fun MoveType.symbol() = when(this) {
+    is MoveType.Capture -> "x"
+    is MoveType.Movement -> "-"
 }

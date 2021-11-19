@@ -1,7 +1,9 @@
-package com.cioccarellia.checkpigeon.logic.model.move
+package com.cioccarellia.checkpigeon.logic.model.move.verbose
 
 import com.cioccarellia.checkpigeon.logic.model.board.Coordinate
 import com.cioccarellia.checkpigeon.logic.model.material.Material
+import com.cioccarellia.checkpigeon.logic.model.move.MoveType
+import com.cioccarellia.checkpigeon.logic.model.move.MoveUnit
 import com.cioccarellia.checkpigeon.logic.model.tile.TileColor
 
 /**
