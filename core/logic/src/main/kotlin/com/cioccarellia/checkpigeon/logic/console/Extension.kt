@@ -1,0 +1,36 @@
+package com.cioccarellia.checkpigeon.logic.console
+
+
+fun String.black() = K9.f(this, Color.BLACK)
+fun String.red() = K9.f(this, Color.RED)
+fun String.green() = K9.f(this, Color.GREEN)
+fun String.yellow() = K9.f(this, Color.YELLOW)
+fun String.blue() = K9.f(this, Color.BLUE)
+fun String.magenta() = K9.f(this, Color.MAGENTA)
+fun String.cyan() = K9.f(this, Color.CYAN)
+fun String.lightGray() = K9.f(this, Color.LIGHT_GRAY)
+fun String.lightRed() = K9.f(this, Color.LIGHT_RED)
+fun String.lightGreen() = K9.f(this, Color.LIGHT_GREEN)
+fun String.lightYellow() = K9.f(this, Color.LIGHT_YELLOW)
+fun String.lightBlue() = K9.f(this, Color.LIGHT_BLUE)
+fun String.lightMagenta() = K9.f(this, Color.LIGHT_MAGENTA)
+fun String.lightCyan() = K9.f(this, Color.LIGHT_CYAN)
+fun String.lightWhite() = K9.f(this, Color.WHITE)
+
+fun String.blackBackground() = K9.b(this, Color.BLACK)
+fun String.redBackground() = K9.b(this, Color.RED)
+fun String.greenBackground() = K9.b(this, Color.GREEN)
+fun String.yellowBackground() = K9.b(this, Color.YELLOW)
+fun String.blueBackground() = K9.b(this, Color.BLUE)
+fun String.magentaBackground() = K9.b(this, Color.MAGENTA)
+fun String.cyanBackground() = K9.b(this, Color.CYAN)
+fun String.lightGrayBackground() = K9.b(this, Color.LIGHT_GRAY)
+fun String.lightRedBackground() = K9.b(this, Color.LIGHT_RED)
+fun String.lightGreenBackground() = K9.b(this, Color.LIGHT_GREEN)
+fun String.lightYellowBackground() = K9.b(this, Color.LIGHT_YELLOW)
+fun String.lightBlueBackground() = K9.b(this, Color.LIGHT_BLUE)
+fun String.lightMagentaBackground() = K9.b(this, Color.LIGHT_MAGENTA)
+fun String.lightCyanBackground() = K9.b(this, Color.LIGHT_CYAN)
+fun String.lightWhiteBackground() = K9.b(this, Color.WHITE)
+
+fun bracket(letter: String) = "[${letter}] "

@@ -1,25 +1,63 @@
+package com.cioccarellia.checkpigeon.logic
+
+import com.cioccarellia.checkpigeon.logic.console.*
 import com.cioccarellia.checkpigeon.logic.engine.Engine
 import com.cioccarellia.checkpigeon.logic.engine.events.Event
 import com.cioccarellia.checkpigeon.logic.model.player.Player
 import com.cioccarellia.checkpigeon.logic.model.tile.TileColor
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.flow.collect
 
-fun main(args: Array<String>) {
-    val inputFlow = MutableSharedFlow<Event>()
+val inputFlow = MutableSharedFlow<Event>()
 
-    val game = Engine(
-        Player("Apium", TileColor.WHITE) to Player("Titi", TileColor.BLACK),
-        inputFlow
-    )
+val engine = Engine(
+    Player("Apium", TileColor.WHITE) to Player("Titi", TileColor.BLACK),
+    inputFlow
+)
 
-    while (true) {
-        CoroutineScope(Dispatchers.IO).launch {
-            inputFlow.emit(
-                Event.Resignation(TileColor.WHITE)
-            )
+fun main(args: Array<String>): Unit = runBlocking {
+    startGame()
+    /**
+     * Async Dispatcher reading flow, never terminating
+     * */
+    CoroutineScope(Dispatchers.Default).launch {
+        println("Initializing".yellowBackground())
+        engine.engineOutputFlow.collect {
+            println("Received event from Engine".yellow())
+            when (it) {
+                is Event.Message -> {
+                    println("Received Message \"${it.content}\"".red())
+                }
+                else -> {
+                    println("UELA".yellowBackground())
+                }
+            }
         }
     }
+
+    inputFlow.emit(
+        Event.Message("Sup")
+    )
+
+
+
+    while (true) {
+        delay(200)
+        println(
+            bracket("Input".green()) + "Input character:"
+        )
+
+        inputFlow.emit(
+            Event.Message(readLine()!!)
+        )
+
+    }
+}
+
+
+suspend fun startGame() {
+    inputFlow.emit(
+        Event.StartGame
+    )
 }
