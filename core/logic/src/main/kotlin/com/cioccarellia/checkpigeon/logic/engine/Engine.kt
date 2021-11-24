@@ -1,10 +1,8 @@
 package com.cioccarellia.checkpigeon.logic.engine
 
+import com.cioccarellia.checkpigeon.debug.CustomLogger
+import com.cioccarellia.checkpigeon.debug.d
 import com.cioccarellia.checkpigeon.logic.board.Board
-import com.cioccarellia.checkpigeon.logic.console.bracket
-import com.cioccarellia.checkpigeon.logic.console.green
-import com.cioccarellia.checkpigeon.logic.console.yellow
-import com.cioccarellia.checkpigeon.logic.console.yellowBackground
 import com.cioccarellia.checkpigeon.logic.engine.events.Event
 import com.cioccarellia.checkpigeon.logic.engine.status.FullGameHistory
 import com.cioccarellia.checkpigeon.logic.engine.status.GameStatus
@@ -44,6 +42,11 @@ class Engine(
      * */
     private val board = Board()
 
+    /**
+     * Logger
+     * */
+    private val engineLogger = CustomLogger(tag = "Engine")
+
     init {
         check(players.first.color == TileColor.WHITE && players.second.color == TileColor.BLACK)
 
@@ -57,9 +60,11 @@ class Engine(
      * Listens on the given input flow for events.
      * */
     private suspend fun hookInputFlow() = inputFlow.collect { event ->
-        println("Received event from Main".yellow())
+        engineLogger.d("Received event $event")
+
         when (event) {
             is Event.Message -> {
+                engineLogger.d("Event is Message")
                 val reply = "Roger that, got ${event.content}"
 
                 _outputFlow.emit(
@@ -67,16 +72,12 @@ class Engine(
                 )
             }
             is Event.StartGame -> {
-                println(
-                    bracket("Engine".green()) + "Starting up game"
-                )
+                engineLogger.d("Event is StartGame")
                 Status.gameStatus.onGameStarted()
                 Status.gameHistory.onGameStarted()
             }
             is Event.EndGame -> {
-                println(
-                    bracket("Engine".green()) + "Ending game"
-                )
+                engineLogger.d("Event is EndGame")
                 Status.gameStatus.onGameEnded()
                 Status.gameHistory.onGameEnded()
             }

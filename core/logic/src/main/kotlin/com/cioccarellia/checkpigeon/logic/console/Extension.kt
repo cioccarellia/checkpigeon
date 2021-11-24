@@ -1,6 +1,5 @@
 package com.cioccarellia.checkpigeon.logic.console
 
-
 fun String.black() = K9.f(this, Color.BLACK)
 fun String.red() = K9.f(this, Color.RED)
 fun String.green() = K9.f(this, Color.GREEN)
@@ -32,5 +31,3 @@ fun String.lightBlueBackground() = K9.b(this, Color.LIGHT_BLUE)
 fun String.lightMagentaBackground() = K9.b(this, Color.LIGHT_MAGENTA)
 fun String.lightCyanBackground() = K9.b(this, Color.LIGHT_CYAN)
 fun String.lightWhiteBackground() = K9.b(this, Color.WHITE)
-
-fun bracket(letter: String) = "[${letter}] "
