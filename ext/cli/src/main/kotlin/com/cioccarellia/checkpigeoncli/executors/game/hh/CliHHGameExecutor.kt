@@ -33,6 +33,23 @@ class CliHHGameExecutor(
         executorFlow
     )
 
+    suspend fun inputMove(): Move {
+        delay(6_000)
+
+        return Move(
+            moveType = MoveType.Movement,
+            playingColor = TileColor.WHITE,
+            start = Coordinate(
+                File(FileLetter.A), Rank(3)
+            ),
+            end = Coordinate(
+                File(FileLetter.B), Rank(4)
+            ),
+            captures = listOf(),
+            blows = null
+        )
+    }
+
     override suspend fun execute() {
         executorFlow.emit(Event.StartGame)
         CoroutineScope(Dispatchers.Default).launch {
@@ -50,27 +67,11 @@ class CliHHGameExecutor(
 
             executorFlow.emit(
                 Event.SubmissionProposal.SubmissionRequest(
-                    Move(
-                        moveType = MoveType.Movement,
-                        playingColor = TileColor.WHITE,
-                        start = Coordinate(
-                            File(FileLetter.A), Rank(3)
-                        ),
-                        end = Coordinate(
-                            File(FileLetter.B), Rank(4)
-                        ),
-                        captures = listOf(),
-                        blows = null
-                    )
+                    inputMove()
                 )
             )
 
-            engine.stdoutBoard(
-                TileColor.BLACK,
-                highlights = listOf(File(FileLetter.B) to Rank(4))
-            )
-
-            delay(60_000)
+            engine.stdoutBoard()
         }
     }
 

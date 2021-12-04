@@ -55,14 +55,11 @@ suspend fun onSuccessfulCommandParse(command: Command) {
         Exit -> {
             exitProcess(0)
         }
-
         Help -> {
             CLIUtil.helpPage()
         }
-
         is ExportGame -> CliExportExecutor(command).execute()
         is ImportGame -> CliImportExecutor(command).execute()
-
         is GameHumanVsHuman -> CliHHGameExecutor(command).execute()
         is GameHumanVsEngine -> TODO()
         is GameEngineVsEngine -> TODO()
