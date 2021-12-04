@@ -26,6 +26,6 @@ data class VerboseMove(
     override val captures: List<Coordinate>,
     val capturedMaterial: List<Material>,
 
-    override val blows: Pair<Coordinate, Coordinate>,
-    val blownMaterial: Material,
+    override val blows: Pair<Coordinate, Coordinate>?,
+    val blownMaterial: Material?,
 ) : MoveUnit()

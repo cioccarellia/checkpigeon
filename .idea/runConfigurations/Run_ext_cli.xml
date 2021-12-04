@@ -1,7 +1,8 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="Run ext/cli" type="JetRunConfigurationType">
-    <option name="MAIN_CLASS_NAME" value="MainKt" />
+    <option name="MAIN_CLASS_NAME" value="com.cioccarellia.checkpigeoncli.LauncherKt" />
     <module name="checkpigeon.ext.cli.main" />
+    <option name="PROGRAM_PARAMETERS" value="play mode=hh white=WhitePigeon black=BlackPigeon" />
     <shortenClasspath name="NONE" />
     <method v="2">
       <option name="Make" enabled="true" />

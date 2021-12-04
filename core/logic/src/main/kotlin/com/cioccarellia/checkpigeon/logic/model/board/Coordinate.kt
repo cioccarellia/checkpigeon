@@ -17,6 +17,9 @@ data class Coordinate(
     val parity: Boolean
         get() = (file + rank) % 2 == 0
 
+    val highlight
+        get() = file to rank
+
     /**
      * Every checker coordinate has a number
      * */

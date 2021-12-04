@@ -1,6 +1,6 @@
 package com.cioccarellia.checkpigeon.logic.console
 
-object K9 {
+object Tinter {
     private const val ESCAPE = '\u001B'
     private const val RESET = "$ESCAPE[0m"
 

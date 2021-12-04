@@ -11,5 +11,5 @@ abstract class MoveUnit {
     abstract val end: Coordinate
 
     abstract val captures: List<Coordinate>
-    abstract val blows: Pair<Coordinate, Coordinate>
+    abstract val blows: Pair<Coordinate, Coordinate>?
 }

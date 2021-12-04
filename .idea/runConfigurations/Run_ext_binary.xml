@@ -1,6 +1,6 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="Run ext/binary" type="JetRunConfigurationType">
-    <option name="MAIN_CLASS_NAME" value="MainKt" />
+    <option name="MAIN_CLASS_NAME" value="com.cioccarellia.checkpigeoncli.LauncherKt" />
     <module name="checkpigeon.ext.binary.main" />
     <shortenClasspath name="NONE" />
     <method v="2">

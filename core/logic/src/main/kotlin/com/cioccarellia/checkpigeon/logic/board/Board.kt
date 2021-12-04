@@ -4,12 +4,13 @@ import com.cioccarellia.checkpigeon.logic.model.board.Coordinate
 import com.cioccarellia.checkpigeon.logic.model.board.File
 import com.cioccarellia.checkpigeon.logic.model.board.Rank
 import com.cioccarellia.checkpigeon.logic.model.material.Material
+import com.cioccarellia.checkpigeon.logic.model.move.MoveType
 import com.cioccarellia.checkpigeon.logic.model.move.linear.Move
 import com.cioccarellia.checkpigeon.logic.model.tile.Tile
 import com.cioccarellia.checkpigeon.logic.model.tile.TileColor
 
-internal class Board {
-    private val matrix: Array<Array<Tile>> = Array(8) { rankIndex ->
+class Board {
+    val matrix: Array<Array<Tile>> = Array(8) { rankIndex ->
         val rankNumber = 8 - (rankIndex + 1) + 1
 
         Array(8) { fileIndex ->
@@ -52,15 +53,24 @@ internal class Board {
      * Applies changes for a given move
      * */
     internal fun execute(validatedMove: Move) = with(validatedMove) {
-        blows.toList().forEach(::remove)
-        captures.toList().forEach(::remove)
-        swap(start, end)
+        when (moveType) {
+            MoveType.Capture -> {
+                blows?.toList()?.forEach(::remove)
+                captures.toList().forEach(::remove)
+                swap(start, end)
+            }
+            MoveType.Movement -> {
+                swap(start, end)
+                //set(end, get(start))
+                //set(start, Material.Empty)
+            }
+        }
     }
 
     /**
      * Returns the material on a given [Coordinate]
      * */
-    operator fun get(coord: Coordinate) = tile(coord).material
+    operator fun get(coord: Coordinate): Material = tile(coord).material
 
     private fun tile(coord: Coordinate): Tile = matrix[8 - coord.rank.number][coord.file.letter.numeric - 1]
 

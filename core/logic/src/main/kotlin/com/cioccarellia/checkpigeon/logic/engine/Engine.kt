@@ -1,9 +1,13 @@
 package com.cioccarellia.checkpigeon.logic.engine
 
+import com.cioccarellia.checkpigeon.annotations.FromEngine
+import com.cioccarellia.checkpigeon.annotations.ToEngine
 import com.cioccarellia.checkpigeon.debug.CustomLogger
 import com.cioccarellia.checkpigeon.debug.d
+import com.cioccarellia.checkpigeon.debug.w
 import com.cioccarellia.checkpigeon.logic.board.Board
 import com.cioccarellia.checkpigeon.logic.engine.events.Event
+import com.cioccarellia.checkpigeon.logic.engine.internal.BoardPrinter
 import com.cioccarellia.checkpigeon.logic.engine.status.FullGameHistory
 import com.cioccarellia.checkpigeon.logic.engine.status.GameStatus
 import com.cioccarellia.checkpigeon.logic.model.move.linear.Move
@@ -29,13 +33,13 @@ class Engine(
     /**
      * Input [Event]-receiving [MutableSharedFlow]
      * */
-    private val inputFlow: SharedFlow<Event>
+    private val inputFlow: SharedFlow<@ToEngine Event>
 ) {
     /**
      * Output [Event]-emitting [MutableSharedFlow]
      * */
-    private val _outputFlow = MutableSharedFlow<Event>()
-    val engineOutputFlow: SharedFlow<Event> = _outputFlow.asSharedFlow()
+    private val _outputFlow = MutableSharedFlow<@FromEngine Event>()
+    val engineOutputFlow: SharedFlow<@FromEngine Event> = _outputFlow.asSharedFlow()
 
     /**
      * Game board
@@ -43,7 +47,7 @@ class Engine(
     private val board = Board()
 
     /**
-     * Logger
+     * Engine Logger
      * */
     private val engineLogger = CustomLogger(tag = "Engine")
 
@@ -65,7 +69,7 @@ class Engine(
         when (event) {
             is Event.Message -> {
                 engineLogger.d("Event is Message")
-                val reply = "Roger that, got ${event.content}"
+                val reply = "Roger that, got ${event.content}."
 
                 _outputFlow.emit(
                     Event.Message(reply)
@@ -86,11 +90,8 @@ class Engine(
                     is Event.SubmissionProposal.SubmissionRequest -> {
                         board.execute(event.move)
                     }
-                    is Event.SubmissionProposal.SubmissionAccepted -> {
-
-                    }
-                    is Event.SubmissionProposal.SubmissionRejected -> {
-
+                    else -> {
+                        engineLogger.w("Received a SubmissionProposal event which should not be handled by the Engine.")
                     }
                 }
             }
@@ -100,6 +101,13 @@ class Engine(
             }
             is Event.DrawProposal -> TODO()
         }
+    }
+
+    fun stdoutBoard(
+        colorPerspective: TileColor = Status.gameStatus.turnColor,
+        highlights: Highlights = emptyList()
+    ) {
+        BoardPrinter.stdout(board, colorPerspective, highlights)
     }
 
     /**

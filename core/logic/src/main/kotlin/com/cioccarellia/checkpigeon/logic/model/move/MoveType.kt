@@ -5,7 +5,7 @@ sealed class MoveType {
     object Capture : MoveType()
 }
 
-fun MoveType.symbol() = when(this) {
+fun MoveType.symbol() = when (this) {
     is MoveType.Capture -> "x"
     is MoveType.Movement -> "-"
 }

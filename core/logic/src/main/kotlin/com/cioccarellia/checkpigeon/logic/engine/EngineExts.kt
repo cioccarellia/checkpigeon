@@ -23,5 +23,5 @@ internal fun Move.verbose(board: Board) = VerboseMove(
     },
 
     blows = blows,
-    blownMaterial = board[blows.first]
+    blownMaterial = if (blows == null) null else board[blows.first]
 )

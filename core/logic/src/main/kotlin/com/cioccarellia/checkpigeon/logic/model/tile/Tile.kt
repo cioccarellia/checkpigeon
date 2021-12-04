@@ -10,6 +10,6 @@ data class Tile(
     val coordinate: Coordinate,
     var material: Material
 ) {
-   val color: TileColor
+    val color: TileColor
         get() = if (coordinate.parity) TileColor.BLACK else TileColor.WHITE
 }

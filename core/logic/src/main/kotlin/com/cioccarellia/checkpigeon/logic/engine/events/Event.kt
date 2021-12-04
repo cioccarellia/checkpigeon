@@ -1,54 +1,77 @@
 package com.cioccarellia.checkpigeon.logic.engine.events
 
+import com.cioccarellia.checkpigeon.annotations.FromEngine
+import com.cioccarellia.checkpigeon.annotations.ToEngine
 import com.cioccarellia.checkpigeon.logic.model.move.linear.Move
 import com.cioccarellia.checkpigeon.logic.model.tile.TileColor
 
 /**
  * Represents all the events that can be handled by [Engine]
  * */
+@FromEngine
+@ToEngine
 sealed class Event {
 
-    class Message(val content: String): Event()
+    @FromEngine
+    @ToEngine
+    data class Message(val content: String) : Event()
 
+    @ToEngine
     object StartGame : Event()
+
+    @ToEngine
     object EndGame : Event()
 
-    sealed class SubmissionProposal(): Event() {
-        class SubmissionRequest(
+    @FromEngine
+    @ToEngine
+    sealed class SubmissionProposal : Event() {
+        @ToEngine
+        data class SubmissionRequest(
             val move: Move
         ) : SubmissionProposal()
 
-        class SubmissionAccepted() : SubmissionProposal()
+        @FromEngine
+        data class SubmissionAccepted(
+            val message: String? = null
+        ) : SubmissionProposal()
 
-        class SubmissionRejected(
-
-        ): SubmissionProposal() {
-
-
-
-        }
+        @FromEngine
+        data class SubmissionRejected(
+            val rejectionReason: RejectionReason,
+            val message: String? = null
+        ) : SubmissionProposal()
     }
 
 
-    class Resignation(
+    @FromEngine
+    @ToEngine
+    data class Resignation(
         val color: TileColor
     ) : Event()
 
 
-    sealed class DrawProposal: Event() {
+    @FromEngine
+    @ToEngine
+    sealed class DrawProposal : Event() {
 
         abstract val color: TileColor
 
-        class DrawRequest(
+        @FromEngine
+        @ToEngine
+        data class DrawRequest(
             override val color: TileColor
         ) : DrawProposal()
 
-        class DrawAccepted(
+        @FromEngine
+        @ToEngine
+        data class DrawAccepted(
             override val color: TileColor
-        ): DrawProposal()
+        ) : DrawProposal()
 
-        class DrawRejected(
+        @FromEngine
+        @ToEngine
+        data class DrawRejected(
             override val color: TileColor
-        ): DrawProposal()
+        ) : DrawProposal()
     }
 }
