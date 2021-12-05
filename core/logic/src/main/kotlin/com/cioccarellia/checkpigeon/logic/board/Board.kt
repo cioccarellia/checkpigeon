@@ -72,6 +72,7 @@ class Board {
      * */
     operator fun get(coord: Coordinate): Material = tile(coord).material
 
+
     private fun tile(coord: Coordinate): Tile = matrix[8 - coord.rank.number][coord.file.letter.numeric - 1]
 
     private fun set(coord: Coordinate, material: Material) {

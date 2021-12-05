@@ -42,7 +42,7 @@ fun main(args: Array<String>): Unit = runBlocking {
                 }
                 is Event.SubmissionProposal -> when (it) {
                     is Event.SubmissionProposal.SubmissionAccepted -> {
-
+                        println("Move accepted")
                     }
                     is Event.SubmissionProposal.SubmissionRejected -> {
 

@@ -143,7 +143,6 @@ object MoveParser {
             }
         } else {
             val moveText = input
-            check(moveText.length == 5)
 
             if (moveText.contains(MoveType.Movement.symbol())) {
                 // Movement

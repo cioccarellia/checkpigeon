@@ -81,18 +81,19 @@ class Engine(
             }
             is Event.StartGame -> {
                 engineLogger.d("Event is StartGame")
-                status.gameStatus.onGameStarted()
-                status.gameHistory.onGameStarted()
+                status.onGameStarted()
             }
             is Event.EndGame -> {
                 engineLogger.d("Event is EndGame")
-                status.gameStatus.onGameEnded()
-                status.gameHistory.onGameEnded()
+                status.onGameEnded()
             }
             is Event.SubmissionProposal -> {
                 when (event) {
                     is Event.SubmissionProposal.SubmissionRequest -> {
+                        status.onMoveAccepted(event.move, board)
                         board.execute(event.move)
+
+                        _outputFlow.emit(Event.SubmissionProposal.SubmissionAccepted())
                     }
                     else -> {
                         engineLogger.w("Received a SubmissionProposal event which should not be handled by the Engine.")
@@ -100,8 +101,7 @@ class Engine(
                 }
             }
             is Event.Resignation -> {
-                status.gameStatus.onGameEnded()
-                status.gameHistory.onGameEnded()
+                status.onGameEnded()
             }
             is Event.DrawProposal -> TODO()
         }
@@ -112,14 +112,5 @@ class Engine(
         highlights: Highlights = emptyList()
     ) {
         BoardPrinter.stdout(board, colorPerspective, highlights)
-    }
-
-    /**
-     * Called whenever a [Move] gets verified and dispatched
-     * for execution to the [Board].
-     * */
-    internal fun onMoveAccepted(move: Move) {
-        status.gameStatus.onMoveAccepted(move)
-        status.gameHistory.onVerboseMoveAccepted(move.verbose(board))
     }
 }

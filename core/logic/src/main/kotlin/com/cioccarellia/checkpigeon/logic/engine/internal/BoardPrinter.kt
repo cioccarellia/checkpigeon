@@ -19,6 +19,7 @@ internal object BoardPrinter {
     ) = buildString {
         val rows = board.matrix
 
+        // FIXME
         fun generateBoardText() = buildString {
             rows.forEachIndexed { rankIndex, rankTiles ->
                 // [rankIndex] stays between 0 and 7.
