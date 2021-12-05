@@ -8,8 +8,7 @@ import com.cioccarellia.checkpigeon.debug.w
 import com.cioccarellia.checkpigeon.logic.board.Board
 import com.cioccarellia.checkpigeon.logic.engine.events.Event
 import com.cioccarellia.checkpigeon.logic.engine.internal.BoardPrinter
-import com.cioccarellia.checkpigeon.logic.engine.status.FullGameHistory
-import com.cioccarellia.checkpigeon.logic.engine.status.GameStatus
+import com.cioccarellia.checkpigeon.logic.engine.status.EngineStatus
 import com.cioccarellia.checkpigeon.logic.model.move.linear.Move
 import com.cioccarellia.checkpigeon.logic.model.player.Player
 import com.cioccarellia.checkpigeon.logic.model.tile.TileColor
@@ -51,6 +50,11 @@ class Engine(
      * */
     private val engineLogger = CustomLogger(tag = "Engine")
 
+    /**
+     * Game status
+     * */
+    val status = EngineStatus()
+
     init {
         check(players.first.color == TileColor.WHITE && players.second.color == TileColor.BLACK)
 
@@ -77,13 +81,13 @@ class Engine(
             }
             is Event.StartGame -> {
                 engineLogger.d("Event is StartGame")
-                Status.gameStatus.onGameStarted()
-                Status.gameHistory.onGameStarted()
+                status.gameStatus.onGameStarted()
+                status.gameHistory.onGameStarted()
             }
             is Event.EndGame -> {
                 engineLogger.d("Event is EndGame")
-                Status.gameStatus.onGameEnded()
-                Status.gameHistory.onGameEnded()
+                status.gameStatus.onGameEnded()
+                status.gameHistory.onGameEnded()
             }
             is Event.SubmissionProposal -> {
                 when (event) {
@@ -96,27 +100,18 @@ class Engine(
                 }
             }
             is Event.Resignation -> {
-                Status.gameStatus.onGameEnded()
-                Status.gameHistory.onGameEnded()
+                status.gameStatus.onGameEnded()
+                status.gameHistory.onGameEnded()
             }
             is Event.DrawProposal -> TODO()
         }
     }
 
     fun stdoutBoard(
-        colorPerspective: TileColor = Status.gameStatus.turnColor,
+        colorPerspective: TileColor = status.gameStatus.turnColor,
         highlights: Highlights = emptyList()
     ) {
         BoardPrinter.stdout(board, colorPerspective, highlights)
-    }
-
-    /**
-     * Object which collects and preserves information
-     * and status data about the game.
-     * */
-    internal object Status {
-        val gameStatus = GameStatus()
-        val gameHistory = FullGameHistory()
     }
 
     /**
@@ -124,7 +119,7 @@ class Engine(
      * for execution to the [Board].
      * */
     internal fun onMoveAccepted(move: Move) {
-        Status.gameStatus.onMoveAccepted(move)
-        Status.gameHistory.onVerboseMoveAccepted(move.verbose(board))
+        status.gameStatus.onMoveAccepted(move)
+        status.gameHistory.onVerboseMoveAccepted(move.verbose(board))
     }
 }

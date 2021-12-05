@@ -7,6 +7,7 @@ package com.cioccarellia.checkpigeon.logic.model.board
 value class File(val letter: FileLetter) {
     companion object {
         fun from(numeric: Int) = File(FileLetter.from(numeric))
+        fun from(char: Char) = File(FileLetter.from(char))
     }
 }
 
@@ -22,5 +23,16 @@ enum class FileLetter(val numeric: Int) {
 
     companion object {
         fun from(numeric: Int): FileLetter = values()[numeric - 1]
+        fun from(char: Char): FileLetter = when(char.lowercaseChar()) {
+            'a' -> A
+            'b' -> B
+            'c' -> C
+            'd' -> D
+            'e' -> E
+            'f' -> F
+            'g' -> G
+            'h' -> H
+            else -> throw IllegalArgumentException("Given char $char to lowercase is not in range [a..h]")
+        }
     }
 }

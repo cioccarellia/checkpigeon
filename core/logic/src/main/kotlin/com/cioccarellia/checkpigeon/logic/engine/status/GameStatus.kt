@@ -14,10 +14,13 @@ class GameStatus : EngineMoveReceiver {
     val isAlive: Boolean
         get() = hasGameStarted && !hasGameFinished
 
-    var moveNumber: Int = 1
+    var turnNumber: Int = 1
         private set
 
     var turnColor: TileColor = TileColor.WHITE
+        private set
+
+    var moveCount: Int = 0
         private set
 
     var winner: TileColor? = null
@@ -29,18 +32,21 @@ class GameStatus : EngineMoveReceiver {
         when (move.playingColor) {
             TileColor.BLACK -> {
                 turnColor = TileColor.WHITE
-                moveNumber++
+                turnNumber++
             }
             TileColor.WHITE -> {
                 turnColor = TileColor.BLACK
             }
         }
+
+        moveCount++
     }
 
     override fun onGameStarted() {
         hasGameStarted = true
         hasGameFinished = false
-        moveNumber = 0
+        turnNumber = 1
+        moveCount = 0
         turnColor = TileColor.WHITE
         winner = null
     }

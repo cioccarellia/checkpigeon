@@ -6,15 +6,11 @@ import com.cioccarellia.checkpigeon.logic.console.red
 import com.cioccarellia.checkpigeon.logic.console.yellow
 import com.cioccarellia.checkpigeon.logic.engine.Engine
 import com.cioccarellia.checkpigeon.logic.engine.events.Event
-import com.cioccarellia.checkpigeon.logic.model.board.Coordinate
-import com.cioccarellia.checkpigeon.logic.model.board.File
-import com.cioccarellia.checkpigeon.logic.model.board.FileLetter
-import com.cioccarellia.checkpigeon.logic.model.board.Rank
-import com.cioccarellia.checkpigeon.logic.model.move.MoveType
-import com.cioccarellia.checkpigeon.logic.model.move.linear.Move
-import com.cioccarellia.checkpigeon.logic.model.tile.TileColor
 import com.cioccarellia.checkpigeoncli.commands.Command.CreateGame.GameHumanVsHuman
+import com.cioccarellia.checkpigeoncli.commands.readCLI
 import com.cioccarellia.checkpigeoncli.executors.CommandExecutor
+import com.cioccarellia.checkpigeoncli.executors.game.input.MoveParser
+import com.cioccarellia.checkpigeoncli.executors.game.input.ParsedMove
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -33,21 +29,9 @@ class CliHHGameExecutor(
         executorFlow
     )
 
-    suspend fun inputMove(): Move {
-        delay(6_000)
-
-        return Move(
-            moveType = MoveType.Movement,
-            playingColor = TileColor.WHITE,
-            start = Coordinate(
-                File(FileLetter.A), Rank(3)
-            ),
-            end = Coordinate(
-                File(FileLetter.B), Rank(4)
-            ),
-            captures = listOf(),
-            blows = null
-        )
+    private suspend fun inputMove(): ParsedMove = with(engine.status.gameStatus) {
+        val input = readCLI("Move $turnNumber for $turnColor")
+        return@with MoveParser.convert(input, turnColor)
     }
 
     override suspend fun execute() {
@@ -63,15 +47,22 @@ class CliHHGameExecutor(
         engine.stdoutBoard()
 
         while (true) {
-            println("White plays")
+            delay(250)
 
-            executorFlow.emit(
-                Event.SubmissionProposal.SubmissionRequest(
-                    inputMove()
-                )
-            )
+            when (val parsedMove = inputMove()) {
+                is ParsedMove.Success -> {
+                    executorFlow.emit(
+                        Event.SubmissionProposal.SubmissionRequest(
+                            move = parsedMove.move
+                        )
+                    )
 
-            engine.stdoutBoard()
+                    engine.stdoutBoard()
+                }
+                is ParsedMove.Failure -> {
+                    println("Error: ${parsedMove.message}")
+                }
+            }
         }
     }
 

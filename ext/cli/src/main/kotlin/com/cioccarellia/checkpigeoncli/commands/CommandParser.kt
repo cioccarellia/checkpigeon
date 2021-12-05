@@ -4,16 +4,6 @@ import com.cioccarellia.checkpigeon.logic.model.player.Player
 import com.cioccarellia.checkpigeon.logic.model.tile.TileColor
 import java.io.File
 
-sealed class ParsedCommand {
-    data class Success(
-        val command: Command
-    ) : ParsedCommand()
-
-    data class Failure(
-        val message: String
-    ) : ParsedCommand()
-}
-
 object CommandParser {
 
     fun convertArgs(tokens: Array<String>): ParsedCommand = try {

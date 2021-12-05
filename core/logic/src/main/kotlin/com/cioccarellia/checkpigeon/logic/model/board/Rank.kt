@@ -23,5 +23,6 @@ value class Rank(val number: Int) {
 
     companion object {
         fun from(numeric: Int) = Rank(numeric)
+        fun from(char: Char) = Rank(char.digitToInt())
     }
 }
