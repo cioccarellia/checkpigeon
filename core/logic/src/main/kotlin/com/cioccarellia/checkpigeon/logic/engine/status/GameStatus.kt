@@ -1,5 +1,6 @@
 package com.cioccarellia.checkpigeon.logic.engine.status
 
+import com.cioccarellia.checkpigeon.logic.engine.verifier.RejectionDetails
 import com.cioccarellia.checkpigeon.logic.model.move.linear.Move
 import com.cioccarellia.checkpigeon.logic.model.tile.TileColor
 
@@ -42,6 +43,10 @@ class GameStatus : EngineMoveReceiver {
         moveCount++
     }
 
+    override fun onMoveRejected(details: RejectionDetails) {
+
+    }
+
     override fun onGameStarted() {
         hasGameStarted = true
         hasGameFinished = false
@@ -52,6 +57,6 @@ class GameStatus : EngineMoveReceiver {
     }
 
     override fun onGameEnded() {
-        TODO("Not yet implemented")
+
     }
 }

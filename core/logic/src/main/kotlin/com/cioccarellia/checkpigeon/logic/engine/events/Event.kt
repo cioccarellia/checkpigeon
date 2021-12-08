@@ -2,6 +2,7 @@ package com.cioccarellia.checkpigeon.logic.engine.events
 
 import com.cioccarellia.checkpigeon.annotations.FromEngine
 import com.cioccarellia.checkpigeon.annotations.ToEngine
+import com.cioccarellia.checkpigeon.logic.engine.verifier.RejectionDetails
 import com.cioccarellia.checkpigeon.logic.model.move.linear.Move
 import com.cioccarellia.checkpigeon.logic.model.tile.TileColor
 
@@ -27,17 +28,19 @@ sealed class Event {
     sealed class SubmissionProposal : Event() {
         @ToEngine
         data class SubmissionRequest(
-            val move: Move
+            // unsafe move to execute, has to be checked
+            val submittedMove: Move
         ) : SubmissionProposal()
 
         @FromEngine
         data class SubmissionAccepted(
+            val processedMove: Move,
             val message: String? = null
         ) : SubmissionProposal()
 
         @FromEngine
         data class SubmissionRejected(
-            val rejectionReason: RejectionReason,
+            val rejectionDetails: RejectionDetails,
             val message: String? = null
         ) : SubmissionProposal()
     }

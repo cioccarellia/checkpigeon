@@ -9,7 +9,8 @@ import com.cioccarellia.checkpigeon.logic.board.Board
 import com.cioccarellia.checkpigeon.logic.engine.events.Event
 import com.cioccarellia.checkpigeon.logic.engine.internal.BoardPrinter
 import com.cioccarellia.checkpigeon.logic.engine.status.EngineStatus
-import com.cioccarellia.checkpigeon.logic.model.move.linear.Move
+import com.cioccarellia.checkpigeon.logic.engine.verifier.MoveVerifier
+import com.cioccarellia.checkpigeon.logic.engine.verifier.VerificationResult
 import com.cioccarellia.checkpigeon.logic.model.player.Player
 import com.cioccarellia.checkpigeon.logic.model.tile.TileColor
 import kotlinx.coroutines.CoroutineScope
@@ -90,10 +91,25 @@ class Engine(
             is Event.SubmissionProposal -> {
                 when (event) {
                     is Event.SubmissionProposal.SubmissionRequest -> {
-                        status.onMoveAccepted(event.move, board)
-                        board.execute(event.move)
+                        when (val verification = MoveVerifier.verifyMove(event.submittedMove, board, status.gameStatus)) {
+                            is VerificationResult.Passed -> {
+                                status.onMoveAccepted(verification.move, board)
+                                board.execute(verification.move)
 
-                        _outputFlow.emit(Event.SubmissionProposal.SubmissionAccepted())
+                                _outputFlow.emit(Event.SubmissionProposal.SubmissionAccepted(
+                                    processedMove = verification.move,
+                                    message = "Verified by CheckPigeon Engine"
+                                ))
+                            }
+                            is VerificationResult.Failed -> {
+                                status.onMoveRejected(verification.rejectionDetails)
+
+                                _outputFlow.emit(Event.SubmissionProposal.SubmissionRejected(
+                                    rejectionDetails = verification.rejectionDetails,
+                                    message = "Rejected by CheckPigeon Engine"
+                                ))
+                            }
+                        }
                     }
                     else -> {
                         engineLogger.w("Received a SubmissionProposal event which should not be handled by the Engine.")

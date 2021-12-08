@@ -41,7 +41,7 @@ class CliHHGameExecutor(
         }
 
         executorFlow.emit(
-            Event.Message("Sup")
+            Event.Message("Setting up")
         )
 
         engine.stdoutBoard()
@@ -53,9 +53,11 @@ class CliHHGameExecutor(
                 is ParsedMove.Success -> {
                     executorFlow.emit(
                         Event.SubmissionProposal.SubmissionRequest(
-                            move = parsedMove.move
+                            submittedMove = parsedMove.move
                         )
                     )
+
+                    delay(50)
 
                     engine.stdoutBoard()
                 }
@@ -81,7 +83,7 @@ class CliHHGameExecutor(
 
                     }
                     is Event.SubmissionProposal.SubmissionRejected -> {
-
+                        println("Move rejected: ${it.rejectionDetails}.".red())
                     }
                     else -> {
 
