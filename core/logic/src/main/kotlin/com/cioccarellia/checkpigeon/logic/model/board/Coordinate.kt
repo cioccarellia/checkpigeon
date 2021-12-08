@@ -9,7 +9,6 @@ data class Coordinate(
     val file: File,
     val rank: Rank,
 ) {
-
     /**
      * Even square <=> Black
      * Odd square  <=> White
@@ -41,4 +40,10 @@ data class Coordinate(
 
             return weight + step
         }
+
+    companion object {
+        fun raw(file: Int, rank: Int) = Coordinate(
+            File.from(file), Rank.from(rank)
+        )
+    }
 }

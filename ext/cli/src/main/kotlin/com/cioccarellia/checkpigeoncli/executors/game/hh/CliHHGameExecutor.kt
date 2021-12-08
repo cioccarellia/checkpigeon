@@ -29,7 +29,7 @@ class CliHHGameExecutor(
         executorFlow
     )
 
-    private suspend fun inputMove(): ParsedMove = with(engine.status.gameStatus) {
+    private suspend fun processInputMove(): ParsedMove = with(engine.status.gameStatus) {
         val input = readCLI("Move $turnNumber for $turnColor")
         return@with MoveParser.convert(input, turnColor)
     }
@@ -49,7 +49,7 @@ class CliHHGameExecutor(
         while (true) {
             delay(250)
 
-            when (val parsedMove = inputMove()) {
+            when (val parsedMove = processInputMove()) {
                 is ParsedMove.Success -> {
                     executorFlow.emit(
                         Event.SubmissionProposal.SubmissionRequest(

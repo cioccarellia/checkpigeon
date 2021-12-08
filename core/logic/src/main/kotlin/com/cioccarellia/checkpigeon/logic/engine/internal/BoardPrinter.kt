@@ -11,17 +11,53 @@ import com.cioccarellia.checkpigeon.logic.model.board.Rank
 import com.cioccarellia.checkpigeon.logic.model.tile.Tile
 import com.cioccarellia.checkpigeon.logic.model.tile.TileColor
 
+typealias GameMatrix = Array<Array<Tile>>
+
+/**
+ * Board-printing utility
+ * */
 internal object BoardPrinter {
+
+    /**
+     * Prints board to standard output and returns it
+     * */
+
+    /*
+     * white:
+     *          8	|   | ○ |   | ○ |   | ○ |   | ○ |
+     *          7	| ○ |   | ○ |   | ○ |   | ○ |   |
+     *          6	|   | ○ |   | ○ |   | ○ |   | ○ |
+     *          5	|   |   |   |   |   |   |   |   |
+     *          4	|   |   |   |   |   |   |   |   |
+     *          3	| ● |   | ● |   | ● |   | ● |   |
+     *          2	|   | ● |   | ● |   | ● |   | ● |
+     *          1	| ● |   | ● |   | ● |   | ● |   |
+     *                A   B   C   D   E   F   G   H
+     *
+     * black:
+     *          1	|   | ● |   | ● |   | ● |   | ● |
+     *          2	| ● |   | ● |   | ● |   | ● |   |
+     *          3	|   | ● |   | ● |   | ● |   | ● |
+     *          4	|   |   |   |   |   |   |   |   |
+     *          5	|   |   |   |   |   |   |   |   |
+     *          6	| ○ |   | ○ |   | ○ |   | ○ |   |
+     *          7	|   | ○ |   | ○ |   | ○ |   | ○ |
+     *          8	| ○ |   | ○ |   | ○ |   | ○ |   |
+     *                H   G   F   E   D   C   B   A
+     * */
     internal fun stdout(
         board: Board,
         color: TileColor,
         highlights: Highlights
     ) = buildString {
-        val rows = board.matrix
+        val transposedMatrix: GameMatrix = Array(8) { rowIndex ->
+            Array(8) { columnIndex ->
+                board.matrix[columnIndex][rowIndex]
+            }
+        }
 
-        // FIXME
         fun generateBoardText() = buildString {
-            rows.forEachIndexed { rankIndex, rankTiles ->
+            transposedMatrix.forEachIndexed { rankIndex, rankTiles ->
                 // [rankIndex] stays between 0 and 7.
                 // We can begin printing for white (we start from rank 8 through 1)
                 // or for black (we start from rank 1 through 8)
@@ -86,11 +122,14 @@ internal object BoardPrinter {
         color: TileColor,
         highlights: Highlights
     ) = buildString {
-        if (highlights.map { it.second }.contains(rank)) {
+        val highlightedRanks = highlights.map { it.second }
+
+        if (highlightedRanks.contains(rank)) {
             append("${rank.number}".cyan())
         } else {
             append("${rank.number}".lightGreen())
         }
+
         append(TAB)
 
         rankTiles.forEachIndexed { fileIndex, tile ->
@@ -100,11 +139,13 @@ internal object BoardPrinter {
             val coords = Coordinate(file, rank)
 
             appendBarAndSpace()
+
             if (highlights.contains(coords.highlight)) {
                 append(get(coords).toString().lightCyan())
             } else {
                 append(get(coords))
             }
+
             appendSpace()
         }
     }
