@@ -79,7 +79,7 @@ class GameStatus : EngineMoveReceiver {
 
     override fun onGameEnded(result: GameResult) {
         hasGameStarted = true
-        hasGameFinished = false
+        hasGameFinished = true
 
         gameResult = result
     }
