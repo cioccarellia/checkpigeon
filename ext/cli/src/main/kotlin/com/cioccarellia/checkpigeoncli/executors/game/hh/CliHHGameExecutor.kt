@@ -1,6 +1,7 @@
 package com.cioccarellia.checkpigeoncli.executors.game.hh
 
 import com.cioccarellia.checkpigeon.annotations.ToEngine
+import com.cioccarellia.checkpigeon.logic.console.green
 import com.cioccarellia.checkpigeon.logic.console.lightYellow
 import com.cioccarellia.checkpigeon.logic.console.red
 import com.cioccarellia.checkpigeon.logic.console.yellow
@@ -43,6 +44,8 @@ class CliHHGameExecutor(
         engine.stdoutBoard()
 
         while (true) {
+            delay(200)
+
             when (val parsedMove = processInputMove()) {
                 is ParsedMove.Success -> {
                     executorFlow.emit(
@@ -52,7 +55,6 @@ class CliHHGameExecutor(
                     )
 
                     delay(50)
-
                     engine.stdoutBoard()
                 }
                 is ParsedMove.Failure -> {
@@ -66,15 +68,13 @@ class CliHHGameExecutor(
         println("Initializing Main -> Engine collector".lightYellow())
 
         engine.engineOutputFlow.collect {
-            println("Received event from Engine".yellow())
-
             when (it) {
                 is Event.Message -> {
                     println("Received Message \"${it.content}\"".red())
                 }
                 is Event.SubmissionProposal -> when (it) {
                     is Event.SubmissionProposal.SubmissionAccepted -> {
-
+                        println("Engine accepted move".green())
                     }
                     is Event.SubmissionProposal.SubmissionRejected -> {
                         println("Move rejected: ${it.rejectionReason}.".red())

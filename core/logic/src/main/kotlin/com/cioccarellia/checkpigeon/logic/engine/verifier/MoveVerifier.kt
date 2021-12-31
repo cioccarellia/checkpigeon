@@ -108,14 +108,22 @@ object MoveVerifier {
                 val backwardLeftCheck = areCoordinatesCompatibleForMovement(move.start, move.end, Direction.SW)
                 val backwardRightCheck = areCoordinatesCompatibleForMovement(move.start, move.end, Direction.SE)
 
-                if (!forwardLeftCheck && !forwardRightCheck) {
-                    // No forward movement allowed
-                    return Failed(RejectionReason.MOVEMENT_DISALLOWED_MOVEMENT)
-                }
+                when {
+                    forwardLeftCheck -> {
 
-                if (!backwardLeftCheck && !backwardRightCheck) {
-                    // No forward movement allowed
-                    return Failed(RejectionReason.MOVEMENT_DISALLOWED_MOVEMENT)
+                    }
+                    forwardRightCheck -> {
+
+                    }
+                    backwardLeftCheck -> {
+
+                    }
+                    backwardRightCheck -> {
+
+                    }
+                    else -> {
+                        return Failed(RejectionReason.MOVEMENT_DISALLOWED_MOVEMENT)
+                    }
                 }
 
                 return Passed(move)
@@ -210,7 +218,7 @@ object MoveVerifier {
                             }
 
                             if (status.turnColor == TileColor.WHITE) {
-                                // With white, forward = north
+                                // With white, forward = north, right = east
                                 val forwardLeftJumpCheck = areCoordinatesCompatibleForSingleCaptureJump(
                                     startJump = startJumpCoordinate,
                                     middleJump = currentCaptureCoords,
@@ -225,11 +233,13 @@ object MoveVerifier {
 
                                 when {
                                     forwardLeftJumpCheck -> {
-                                        val jumpDestination = Direction.NW.shiftedCoordinateBy2Diagonally(startJumpCoordinate)
+                                        val jumpDestination =
+                                            Direction.NW.shiftedCoordinateBy2Diagonally(startJumpCoordinate)
                                         lastSuccessfulJumpLand = jumpDestination
                                     }
                                     forwardRightJumpCheck -> {
-                                        val jumpDestination = Direction.NE.shiftedCoordinateBy2Diagonally(startJumpCoordinate)
+                                        val jumpDestination =
+                                            Direction.NE.shiftedCoordinateBy2Diagonally(startJumpCoordinate)
                                         lastSuccessfulJumpLand = jumpDestination
                                     }
                                     else -> {
@@ -237,26 +247,28 @@ object MoveVerifier {
                                     }
                                 }
                             } else {
-                                // With black, forward = south
+                                // With black, forward = south, right = west
                                 val forwardLeftJumpCheck = areCoordinatesCompatibleForSingleCaptureJump(
-                                    startJump = startJumpCoordinate,
-                                    middleJump = currentCaptureCoords,
-                                    jumpDirection = Direction.SW
-                                )
-
-                                val forwardRightJumpCheck = areCoordinatesCompatibleForSingleCaptureJump(
                                     startJump = startJumpCoordinate,
                                     middleJump = currentCaptureCoords,
                                     jumpDirection = Direction.SE
                                 )
 
+                                val forwardRightJumpCheck = areCoordinatesCompatibleForSingleCaptureJump(
+                                    startJump = startJumpCoordinate,
+                                    middleJump = currentCaptureCoords,
+                                    jumpDirection = Direction.SW
+                                )
+
                                 when {
                                     forwardLeftJumpCheck -> {
-                                        val jumpDestination = Direction.SW.shiftedCoordinateBy2Diagonally(startJumpCoordinate)
+                                        val jumpDestination =
+                                            Direction.SE.shiftedCoordinateBy2Diagonally(startJumpCoordinate)
                                         lastSuccessfulJumpLand = jumpDestination
                                     }
                                     forwardRightJumpCheck -> {
-                                        val jumpDestination = Direction.SE.shiftedCoordinateBy2Diagonally(startJumpCoordinate)
+                                        val jumpDestination =
+                                            Direction.SW.shiftedCoordinateBy2Diagonally(startJumpCoordinate)
                                         lastSuccessfulJumpLand = jumpDestination
                                     }
                                     else -> {
@@ -273,9 +285,103 @@ object MoveVerifier {
                 return Passed(move)
             }
             is Material.Damone -> {
+                if (move.captures.size > 9) {
+                    // Damona captures are capped to 9, because they eventually run out of targets
+                    return Failed(RejectionReason.CAPTURE_CAPTURED_PIECES_NUMBER_MISMATCH)
+                }
+
                 if (attackingMaterial.color != status.turnColor) {
                     // Wrong color piece
                     return Failed(RejectionReason.CAPTURE_WRONG_COLOR_PIECE)
+                }
+
+
+                var lastSuccessfulJumpLand: Coordinate? = null
+                move.captures.forEachIndexed { jumpIndex, currentCaptureCoords ->
+                    /*
+                     * For each iteration, this is the starting square.
+                     * */
+                    val startJumpCoordinate: Coordinate = when (jumpIndex) {
+                        0 -> move.start
+                        else -> lastSuccessfulJumpLand!!
+                    }
+
+                    fun damonaCheckFunction(): Failed? {
+                        val forwardLeftJumpCheck = areCoordinatesCompatibleForSingleCaptureJump(
+                            startJump = startJumpCoordinate,
+                            middleJump = currentCaptureCoords,
+                            jumpDirection = Direction.NW
+                        )
+
+                        val forwardRightJumpCheck = areCoordinatesCompatibleForSingleCaptureJump(
+                            startJump = startJumpCoordinate,
+                            middleJump = currentCaptureCoords,
+                            jumpDirection = Direction.NE
+                        )
+
+                        val backwardRightJumpCheck = areCoordinatesCompatibleForSingleCaptureJump(
+                            startJump = startJumpCoordinate,
+                            middleJump = currentCaptureCoords,
+                            jumpDirection = Direction.SE
+                        )
+
+                        val backwardLeftJumpCheck = areCoordinatesCompatibleForSingleCaptureJump(
+                            startJump = startJumpCoordinate,
+                            middleJump = currentCaptureCoords,
+                            jumpDirection = Direction.SW
+                        )
+
+
+                        when {
+                            forwardLeftJumpCheck -> {
+                                val jumpDestination =
+                                    Direction.NW.shiftedCoordinateBy2Diagonally(startJumpCoordinate)
+                                lastSuccessfulJumpLand = jumpDestination
+                            }
+                            forwardRightJumpCheck -> {
+                                val jumpDestination =
+                                    Direction.NE.shiftedCoordinateBy2Diagonally(startJumpCoordinate)
+                                lastSuccessfulJumpLand = jumpDestination
+                            }
+                            backwardLeftJumpCheck -> {
+                                val jumpDestination =
+                                    Direction.SW.shiftedCoordinateBy2Diagonally(startJumpCoordinate)
+                                lastSuccessfulJumpLand = jumpDestination
+                            }
+                            backwardRightJumpCheck -> {
+                                val jumpDestination =
+                                    Direction.SE.shiftedCoordinateBy2Diagonally(startJumpCoordinate)
+                                lastSuccessfulJumpLand = jumpDestination
+                            }
+                            else -> {
+                                return Failed(RejectionReason.CAPTURE_DISALLOWED_CAPTURE)
+                            }
+                        }
+
+                        return null
+                    }
+
+                    when (val capturedPiece = board[currentCaptureCoords]) {
+                        is Material.Dama -> {
+                            if (capturedPiece.color == status.turnColor) {
+                                return Failed(RejectionReason.CAPTURE_CANNIBALISM)
+                            }
+
+                            damonaCheckFunction()?.let {
+                                return it
+                            }
+                        }
+                        is Material.Damone -> {
+                            if (capturedPiece.color == status.turnColor) {
+                                return Failed(RejectionReason.CAPTURE_CANNIBALISM)
+                            }
+
+                            damonaCheckFunction()?.let {
+                                return it
+                            }
+                        }
+                        Material.Empty -> return Failed(RejectionReason.CAPTURE_EMPTY_CAPTURE_MATERIAL)
+                    }
                 }
 
                 return Passed(move)

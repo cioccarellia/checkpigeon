@@ -16,6 +16,7 @@ data class Move(
     override val captures: List<Coordinate>,
     override val blows: Pair<Coordinate, Coordinate>?,
 ) : MoveUnit() {
+
     /**
      * Generates movetext for the given move
      * */

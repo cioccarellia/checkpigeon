@@ -99,6 +99,8 @@ class Board {
                 }
             }
         }
+
+        matrix[4][2].material = Material.Damone(TileColor.WHITE)
     }
 
     /**
@@ -113,8 +115,6 @@ class Board {
             }
             MoveType.Movement -> {
                 swap(start, end)
-                //set(end, get(start))
-                //set(start, Material.Empty)
             }
         }
     }
