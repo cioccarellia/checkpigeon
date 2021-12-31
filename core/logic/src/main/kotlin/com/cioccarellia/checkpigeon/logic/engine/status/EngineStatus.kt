@@ -2,12 +2,15 @@ package com.cioccarellia.checkpigeon.logic.engine.status
 
 import com.cioccarellia.checkpigeon.logic.board.Board
 import com.cioccarellia.checkpigeon.logic.engine.verbose
-import com.cioccarellia.checkpigeon.logic.engine.verifier.RejectionDetails
+import com.cioccarellia.checkpigeon.logic.engine.verifier.RejectionReason
 import com.cioccarellia.checkpigeon.logic.model.move.linear.Move
 
+/**
+ * Keeps track of the game ongoing status
+ * */
 class EngineStatus {
     val gameStatus = GameStatus()
-    val gameHistory = FullGameHistory()
+    val gameHistory = GameHistory()
 
     fun onGameStarted() {
         gameStatus.onGameStarted()
@@ -27,7 +30,7 @@ class EngineStatus {
         gameHistory.onVerboseMoveAccepted(move.verbose(board))
     }
 
-    fun onMoveRejected(details: RejectionDetails) {
+    fun onMoveRejected(details: RejectionReason) {
         gameStatus.onMoveRejected(details)
         gameHistory.onVerboseMoveRejected(details)
     }

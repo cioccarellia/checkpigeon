@@ -62,6 +62,8 @@ class Engine(
         CoroutineScope(Dispatchers.IO).launch {
             hookInputFlow()
         }
+
+        status.onGameStarted()
     }
 
 
@@ -89,25 +91,36 @@ class Engine(
                 status.onGameEnded()
             }
             is Event.SubmissionProposal -> {
+                /**
+                 * We received a Move Submission Proposal.
+                 * [Engine] only accepts [SubmissionRequest]s, since the engine itself is the
+                 * part deciding whether moves get approved or rejected.
+                 */
+
                 when (event) {
                     is Event.SubmissionProposal.SubmissionRequest -> {
+                        // A move has been played
                         when (val verification = MoveVerifier.verifyMove(event.submittedMove, board, status.gameStatus)) {
                             is VerificationResult.Passed -> {
                                 status.onMoveAccepted(verification.move, board)
                                 board.execute(verification.move)
 
-                                _outputFlow.emit(Event.SubmissionProposal.SubmissionAccepted(
-                                    processedMove = verification.move,
-                                    message = "Verified by CheckPigeon Engine"
-                                ))
+                                _outputFlow.emit(
+                                    Event.SubmissionProposal.SubmissionAccepted(
+                                        processedMove = verification.move,
+                                        message = "Verified by CheckPigeon Engine"
+                                    )
+                                )
                             }
                             is VerificationResult.Failed -> {
-                                status.onMoveRejected(verification.rejectionDetails)
+                                status.onMoveRejected(verification.rejectionReason)
 
-                                _outputFlow.emit(Event.SubmissionProposal.SubmissionRejected(
-                                    rejectionDetails = verification.rejectionDetails,
-                                    message = "Rejected by CheckPigeon Engine"
-                                ))
+                                _outputFlow.emit(
+                                    Event.SubmissionProposal.SubmissionRejected(
+                                        rejectionReason = verification.rejectionReason,
+                                        message = "Rejected by CheckPigeon Engine"
+                                    )
+                                )
                             }
                         }
                     }

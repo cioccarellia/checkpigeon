@@ -1,19 +1,25 @@
 package com.cioccarellia.checkpigeon.logic.engine.status
 
-import com.cioccarellia.checkpigeon.logic.engine.verifier.RejectionDetails
+import com.cioccarellia.checkpigeon.logic.engine.verifier.RejectionReason
 import com.cioccarellia.checkpigeon.logic.model.move.linear.Move
 import com.cioccarellia.checkpigeon.logic.model.move.verbose.VerboseMove
 
+/**
+ * Implements a simple move receiver & status holder (only current state)
+ * */
 interface EngineMoveReceiver {
     fun onGameStarted()
     fun onGameEnded()
     fun onMoveAccepted(move: Move)
-    fun onMoveRejected(details: RejectionDetails)
+    fun onMoveRejected(details: RejectionReason)
 }
 
+/**
+ * Implements a verbose move receiver & status holder (access to previous states)
+ * */
 interface EngineVerboseMoveReceiver {
     fun onGameStarted()
     fun onGameEnded()
     fun onVerboseMoveAccepted(move: VerboseMove)
-    fun onVerboseMoveRejected(details: RejectionDetails)
+    fun onVerboseMoveRejected(details: RejectionReason)
 }

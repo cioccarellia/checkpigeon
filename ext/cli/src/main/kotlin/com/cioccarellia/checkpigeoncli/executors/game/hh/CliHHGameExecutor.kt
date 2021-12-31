@@ -35,20 +35,14 @@ class CliHHGameExecutor(
     }
 
     override suspend fun execute() {
-        executorFlow.emit(Event.StartGame)
         CoroutineScope(Dispatchers.Default).launch {
             initEngineCollector()
         }
 
-        executorFlow.emit(
-            Event.Message("Setting up")
-        )
-
+        executorFlow.emit(Event.StartGame)
         engine.stdoutBoard()
 
         while (true) {
-            delay(250)
-
             when (val parsedMove = processInputMove()) {
                 is ParsedMove.Success -> {
                     executorFlow.emit(
@@ -83,7 +77,7 @@ class CliHHGameExecutor(
 
                     }
                     is Event.SubmissionProposal.SubmissionRejected -> {
-                        println("Move rejected: ${it.rejectionDetails}.".red())
+                        println("Move rejected: ${it.rejectionReason}.".red())
                     }
                     else -> {
 

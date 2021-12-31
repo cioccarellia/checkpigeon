@@ -2,7 +2,7 @@ package com.cioccarellia.checkpigeon.logic.engine.events
 
 import com.cioccarellia.checkpigeon.annotations.FromEngine
 import com.cioccarellia.checkpigeon.annotations.ToEngine
-import com.cioccarellia.checkpigeon.logic.engine.verifier.RejectionDetails
+import com.cioccarellia.checkpigeon.logic.engine.verifier.RejectionReason
 import com.cioccarellia.checkpigeon.logic.model.move.linear.Move
 import com.cioccarellia.checkpigeon.logic.model.tile.TileColor
 
@@ -40,7 +40,7 @@ sealed class Event {
 
         @FromEngine
         data class SubmissionRejected(
-            val rejectionDetails: RejectionDetails,
+            val rejectionReason: RejectionReason,
             val message: String? = null
         ) : SubmissionProposal()
     }

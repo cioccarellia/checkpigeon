@@ -1,5 +1,6 @@
 package com.cioccarellia.checkpigeoncli.executors.game.input
 
+import com.cioccarellia.checkpigeon.logic.board.Direction
 import com.cioccarellia.checkpigeon.logic.model.board.Coordinate
 import com.cioccarellia.checkpigeon.logic.model.board.File
 import com.cioccarellia.checkpigeon.logic.model.board.FileLetter
@@ -39,22 +40,44 @@ object MoveParser {
     }
 
     // a1xb2
+    // a7xb6xd4
     // a1xb2xc3xd4
     object Captures {
-        internal fun extractCaptureStartEndPair(captureText: String): Pair<Coordinate, Coordinate> {
+
+
+        internal fun extractCaptureStartEndPairV2(captureText: String): Pair<Coordinate, Coordinate> {
             check(captureText.contains("x"))
-            val size = captureText.length
+            val ctl = captureText.length
 
-            val start = parseCoordinate(captureText.first(), captureText[1])
-            val end = parseCoordinate(captureText[size - 2], captureText.last())
+            // Start of capture list == moving piece
+            val startingCoord = parseCoordinate(captureText.first(), captureText[1])
 
-            /*
-             * This is the next-to-last coordinate in capture list.
-             * If this is a simple single-capture, then capture == start
-             * */
-            val capturer = parseCoordinate(captureText[size - 5], captureText[size - 4])
+            // end of capture list == last captured
+            val lastCapturedPiece = parseCoordinate(captureText[ctl - 2], captureText.last())
 
-            return start to inferNextCoordinate(center = end, capturer = capturer)
+            val list = captureText.split("x").map {
+                parseCoordinate(it[0], it[1])
+            }
+
+            // at the end of the cycle, where the piece lands
+            var lastJumpPosition: Coordinate? = null
+            // at the end of the cycle, the direction of the last capture
+            var lastCaptureDirection: Direction? = null
+
+            list.subList(1, list.size).forEachIndexed { i, coords ->
+                val lastStart: Coordinate = when (i) {
+                    0 -> startingCoord
+                    else -> lastJumpPosition!!
+                }
+
+                val direction = Direction.infer(lastStart, coords)
+                val landingCoordinates = direction.shiftedCoordinateBy1Diagonally(coords)
+
+                lastJumpPosition = landingCoordinates
+                lastCaptureDirection = direction
+            }
+
+            return startingCoord to lastJumpPosition!!
         }
 
         /**
@@ -126,7 +149,7 @@ object MoveParser {
             } else {
                 // Captures
                 check(moveText.length >= 5)
-                val startEndTiles = Captures.extractCaptureStartEndPair(moveText)
+                val startEndTiles = Captures.extractCaptureStartEndPairV2(moveText)
                 val captureList = Captures.extractCaptureList(moveText)
 
                 ParsedMove.Success(
@@ -163,12 +186,12 @@ object MoveParser {
             } else {
                 // Captures
                 check(moveText.length >= 5)
-                val startEndTiles = Captures.extractCaptureStartEndPair(moveText)
+                val startEndTiles = Captures.extractCaptureStartEndPairV2(moveText)
                 val captureList = Captures.extractCaptureList(moveText)
 
                 ParsedMove.Success(
                     move = Move(
-                        moveType = MoveType.Movement,
+                        moveType = MoveType.Capture,
                         playingColor = playingColor,
 
                         start = startEndTiles.first,

@@ -19,6 +19,9 @@ data class Coordinate(
     val highlight
         get() = file to rank
 
+    fun rawFile() = file.letter.numeric
+    fun rawRank() = rank.number
+
     /**
      * Every checker coordinate has a number
      * */
