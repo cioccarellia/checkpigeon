@@ -1,6 +1,7 @@
 package com.cioccarellia.checkpigeon.logic.engine.status
 
 import com.cioccarellia.checkpigeon.logic.board.Board
+import com.cioccarellia.checkpigeon.logic.engine.game.GameResult
 import com.cioccarellia.checkpigeon.logic.engine.verbose
 import com.cioccarellia.checkpigeon.logic.engine.verifier.RejectionReason
 import com.cioccarellia.checkpigeon.logic.model.move.linear.Move
@@ -17,9 +18,9 @@ class EngineStatus {
         gameHistory.onGameStarted()
     }
 
-    fun onGameEnded() {
-        gameStatus.onGameEnded()
-        gameHistory.onGameEnded()
+    fun onGameEnded(result: GameResult) {
+        gameStatus.onGameEnded(result)
+        gameHistory.onGameEnded(result)
     }
 
     /**

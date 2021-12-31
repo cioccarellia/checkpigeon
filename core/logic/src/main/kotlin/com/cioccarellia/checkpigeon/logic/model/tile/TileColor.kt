@@ -7,4 +7,9 @@ enum class TileColor {
     override fun toString(): String {
         return super.toString().lowercase()
     }
+
+    operator fun not() = when (this) {
+        BLACK -> WHITE
+        WHITE -> BLACK
+    }
 }

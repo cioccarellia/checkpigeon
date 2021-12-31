@@ -2,7 +2,7 @@ package com.cioccarellia.checkpigeon.logic.engine.verifier
 
 import com.cioccarellia.checkpigeon.logic.board.Board
 import com.cioccarellia.checkpigeon.logic.board.Direction
-import com.cioccarellia.checkpigeon.logic.engine.status.GameStatus
+import com.cioccarellia.checkpigeon.logic.engine.game.GameStatus
 import com.cioccarellia.checkpigeon.logic.engine.verifier.VerificationResult.Failed
 import com.cioccarellia.checkpigeon.logic.engine.verifier.VerificationResult.Passed
 import com.cioccarellia.checkpigeon.logic.model.board.Coordinate

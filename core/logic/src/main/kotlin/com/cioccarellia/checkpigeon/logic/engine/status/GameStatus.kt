@@ -1,17 +1,10 @@
 package com.cioccarellia.checkpigeon.logic.engine.status
 
+import com.cioccarellia.checkpigeon.logic.engine.game.GameResult
 import com.cioccarellia.checkpigeon.logic.engine.verifier.RejectionReason
 import com.cioccarellia.checkpigeon.logic.model.move.linear.Move
-import com.cioccarellia.checkpigeon.logic.model.player.Player
 import com.cioccarellia.checkpigeon.logic.model.tile.TileColor
 
-sealed class GameResult {
-    object Draw : GameResult()
-    class Done(
-        val winner: Player,
-        val loser: Player
-    ) : GameResult()
-}
 
 class GameStatus : EngineMoveReceiver {
 
@@ -70,18 +63,24 @@ class GameStatus : EngineMoveReceiver {
     }
 
     override fun onGameStarted() {
+        if (gameResult != null) {
+            // game has already been played
+            return
+        }
+
         hasGameStarted = true
         hasGameFinished = false
+
         turnNumber = 1
         moveCount = 0
         turnColor = TileColor.WHITE
         gameResult = null
     }
 
-    override fun onGameEnded() {
+    override fun onGameEnded(result: GameResult) {
         hasGameStarted = true
         hasGameFinished = false
 
-        // TODO
+        gameResult = result
     }
 }

@@ -1,5 +1,6 @@
 package com.cioccarellia.checkpigeon.logic.engine.status
 
+import com.cioccarellia.checkpigeon.logic.engine.game.GameResult
 import com.cioccarellia.checkpigeon.logic.engine.verifier.RejectionReason
 import com.cioccarellia.checkpigeon.logic.model.move.verbose.VerboseMove
 import com.cioccarellia.checkpigeon.logic.model.tile.TileColor.BLACK
@@ -23,5 +24,5 @@ class GameHistory : EngineVerboseMoveReceiver {
 
     override fun onGameStarted() = Unit
 
-    override fun onGameEnded() = Unit
+    override fun onGameEnded(result: GameResult) = Unit
 }

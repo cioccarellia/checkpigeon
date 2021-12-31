@@ -103,6 +103,41 @@ class Board {
         matrix[4][2].material = Material.Damone(TileColor.WHITE)
     }
 
+    val whitePieceCount: Int
+        get() = countPieces(TileColor.WHITE)
+
+    val blackPieceCount: Int
+        get() = countPieces(TileColor.BLACK)
+
+    private fun countPieces(color: TileColor) = matrix.sumOf {
+        it.count { tile ->
+            when (val material = tile.material) {
+                is Material.Dama -> material.color == color
+                is Material.Damone -> material.color == color
+                else -> false
+            }
+        }
+    }
+
+    fun queryLastRankPiece(): Coordinate? {
+        // white
+        matrix.forEach {
+            val firstRankPiece = it[0]
+            val lastRankPiece = it[7]
+
+
+            if (firstRankPiece.material == Material.Dama(color = TileColor.BLACK)) {
+                return firstRankPiece.coordinate
+            }
+
+            if (lastRankPiece.material == Material.Dama(color = TileColor.WHITE)) {
+                return lastRankPiece.coordinate
+            }
+        }
+
+        return null
+    }
+
     /**
      * Applies changes for a given move
      * */
@@ -126,7 +161,7 @@ class Board {
 
     private fun tile(coord: Coordinate): Tile = matrix[coord.file.letter.numeric - 1][coord.rank.number - 1]
 
-    private fun set(coord: Coordinate, material: Material) {
+    internal fun set(coord: Coordinate, material: Material) {
         matrix[coord.file.letter.numeric - 1][coord.rank.number - 1].material = material
     }
 

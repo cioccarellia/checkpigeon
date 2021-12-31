@@ -20,9 +20,6 @@ sealed class Event {
     @ToEngine
     object StartGame : Event()
 
-    @ToEngine
-    object EndGame : Event()
-
     @FromEngine
     @ToEngine
     sealed class SubmissionProposal : Event() {
@@ -49,6 +46,9 @@ sealed class Event {
     @FromEngine
     @ToEngine
     data class Resignation(
+        /**
+         * The color of the resigning player
+         * */
         val color: TileColor
     ) : Event()
 

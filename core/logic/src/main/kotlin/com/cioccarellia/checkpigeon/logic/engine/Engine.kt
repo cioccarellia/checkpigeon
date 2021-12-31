@@ -5,12 +5,15 @@ import com.cioccarellia.checkpigeon.annotations.ToEngine
 import com.cioccarellia.checkpigeon.debug.CustomLogger
 import com.cioccarellia.checkpigeon.debug.d
 import com.cioccarellia.checkpigeon.debug.w
+import com.cioccarellia.checkpigeon.ext.findPlayerWithColor
 import com.cioccarellia.checkpigeon.logic.board.Board
 import com.cioccarellia.checkpigeon.logic.engine.events.Event
+import com.cioccarellia.checkpigeon.logic.engine.game.GameResult
 import com.cioccarellia.checkpigeon.logic.engine.internal.BoardPrinter
 import com.cioccarellia.checkpigeon.logic.engine.status.EngineStatus
 import com.cioccarellia.checkpigeon.logic.engine.verifier.MoveVerifier
 import com.cioccarellia.checkpigeon.logic.engine.verifier.VerificationResult
+import com.cioccarellia.checkpigeon.logic.model.material.Material
 import com.cioccarellia.checkpigeon.logic.model.player.Player
 import com.cioccarellia.checkpigeon.logic.model.tile.TileColor
 import kotlinx.coroutines.CoroutineScope
@@ -20,6 +23,7 @@ import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
+import kotlin.contracts.contract
 
 /**
  * Checkpigeon game com.cioccarellia.checkpigeon.logic.getEngine
@@ -60,12 +64,39 @@ class Engine(
         check(players.first.color == TileColor.WHITE && players.second.color == TileColor.BLACK)
 
         CoroutineScope(Dispatchers.IO).launch {
+            // forever running coroutine
             hookInputFlow()
         }
 
         status.onGameStarted()
     }
 
+    private fun postSubmissionGameEngineLogic() {
+        when {
+            board.whitePieceCount == 0 -> {
+                status.onGameEnded(
+                    GameResult.Done(
+                        winner = players.findPlayerWithColor(TileColor.BLACK),
+                        loser = players.findPlayerWithColor(TileColor.WHITE),
+                    )
+                )
+            }
+            board.blackPieceCount == 0 -> {
+                status.onGameEnded(
+                    GameResult.Done(
+                        winner = players.findPlayerWithColor(TileColor.WHITE),
+                        loser = players.findPlayerWithColor(TileColor.BLACK),
+                    )
+                )
+            }
+        }
+
+        board.queryLastRankPiece()?.let {
+            val piece = board[it]
+            require(piece is Material.Dama)
+            board.set(it, Material.Damone(piece.color))
+        }
+    }
 
     /**
      * Listens on the given input flow for events.
@@ -86,17 +117,12 @@ class Engine(
                 engineLogger.d("Event is StartGame")
                 status.onGameStarted()
             }
-            is Event.EndGame -> {
-                engineLogger.d("Event is EndGame")
-                status.onGameEnded()
-            }
             is Event.SubmissionProposal -> {
                 /**
                  * We received a Move Submission Proposal.
                  * [Engine] only accepts [SubmissionRequest]s, since the engine itself is the
                  * part deciding whether moves get approved or rejected.
                  */
-
                 when (event) {
                     is Event.SubmissionProposal.SubmissionRequest -> {
                         // A move has been played
@@ -104,6 +130,8 @@ class Engine(
                             is VerificationResult.Passed -> {
                                 status.onMoveAccepted(verification.move, board)
                                 board.execute(verification.move)
+
+                                postSubmissionGameEngineLogic()
 
                                 _outputFlow.emit(
                                     Event.SubmissionProposal.SubmissionAccepted(
@@ -130,9 +158,22 @@ class Engine(
                 }
             }
             is Event.Resignation -> {
-                status.onGameEnded()
+                status.onGameEnded(
+                    GameResult.Done(
+                        winner = players.findPlayerWithColor(event.color),
+                        loser = players.findPlayerWithColor(!event.color),
+                    )
+                )
             }
-            is Event.DrawProposal -> TODO()
+            is Event.DrawProposal -> {
+                val acceptsDraw = true
+
+                if (acceptsDraw) {
+                    status.onGameEnded(
+                        GameResult.Draw
+                    )
+                }
+            }
         }
     }
 
