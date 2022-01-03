@@ -6,12 +6,21 @@ import com.cioccarellia.checkpigeon.logic.engine.status.GameStatus
 import com.cioccarellia.checkpigeon.logic.engine.verifier.VerificationResult.Failed
 import com.cioccarellia.checkpigeon.logic.engine.verifier.VerificationResult.Passed
 import com.cioccarellia.checkpigeon.logic.model.board.Coordinate
+import com.cioccarellia.checkpigeon.logic.model.board.Rank
 import com.cioccarellia.checkpigeon.logic.model.material.Material
 import com.cioccarellia.checkpigeon.logic.model.move.MoveType
 import com.cioccarellia.checkpigeon.logic.model.move.linear.Move
 import com.cioccarellia.checkpigeon.logic.model.tile.TileColor
 
 object MoveVerifier {
+
+    fun isPromotionSquare(
+        color: TileColor,
+        square: Coordinate
+    ) = when (color) {
+        TileColor.WHITE -> square.rank.number == 8
+        TileColor.BLACK -> square.rank.number == 1
+    }
 
     fun verifyMove(
         move: Move,
@@ -45,10 +54,6 @@ object MoveVerifier {
      * Tricky things:
      * - blows
      * - black and white move in opposite directions, so you have to flip the north when black plays
-     *
-     *
-     *
-     *
      * */
     private fun verifyMovement(
         move: Move,
@@ -90,6 +95,14 @@ object MoveVerifier {
                         // in case none of them is valid
                         return Failed(RejectionReason.MOVEMENT_DISALLOWED_MOVEMENT)
                     }
+                }
+
+                // All checks have passed
+                // At this point we check for promotion (only for a dama)
+                if (isPromotionSquare(color = status.turnColor, square = move.end)) {
+                    move.promotion = move.end
+                } else if (move.promotion != null) {
+                    return Failed(RejectionReason.CAPTURE_INJECTED_PROMOTION)
                 }
 
                 return Passed(move)
@@ -280,6 +293,14 @@ object MoveVerifier {
                         is Material.Damone -> return Failed(RejectionReason.CAPTURE_DAMONE_CAPTURE_MATERIAL)
                         Material.Empty -> return Failed(RejectionReason.CAPTURE_EMPTY_CAPTURE_MATERIAL)
                     }
+                }
+
+                // All checks have passed
+                // At this point we check for promotion (only for a dama)
+                if (isPromotionSquare(color = status.turnColor, square = move.end)) {
+                    move.promotion = move.end
+                } else if (move.promotion != null) {
+                    return Failed(RejectionReason.CAPTURE_INJECTED_PROMOTION)
                 }
 
                 return Passed(move)

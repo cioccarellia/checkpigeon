@@ -1,6 +1,7 @@
 package com.cioccarellia.checkpigeon.logic.model.board
 
 import com.cioccarellia.checkpigeon.logic.model.board.ext.plus
+import com.cioccarellia.checkpigeon.logic.model.tile.Tile
 
 /**
  * Represents a single board tile, with its file and rank.
@@ -12,6 +13,8 @@ data class Coordinate(
     /**
      * Even square <=> Black
      * Odd square  <=> White
+     *
+     * Function returns whether value is even, thus whether the coordinate is black
      * */
     val parity: Boolean
         get() = (file + rank) % 2 == 0

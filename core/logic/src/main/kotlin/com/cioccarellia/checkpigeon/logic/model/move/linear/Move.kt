@@ -17,14 +17,21 @@ data class Move(
     override val blows: Pair<Coordinate, Coordinate>?,
 ) : MoveUnit() {
 
+    override var promotion: Coordinate? = null
+
     /**
      * Generates movetext for the given move
      * */
     fun humanMoveNotation(): String {
-        val blowText = "" // TODO
+        val blowText = if (blows == null) {
+            ""
+        } else "${blows.first}x${blows.second}"
 
-        val captureText =
-            captures.mapIndexed { index, it -> it.toString() + if (index == captures.size) "" else "x" }.toString()
+        val captureText = captures
+            .mapIndexed { index, captureCoordinate ->
+                captureCoordinate.toString() + if (index == captures.lastIndex) "" else "x"
+            }
+            .toString()
 
         return buildString {
             append(blowText)
@@ -40,7 +47,6 @@ data class Move(
             )
         }
     }
-
 
     /**
      * Generates draught notation for the given move

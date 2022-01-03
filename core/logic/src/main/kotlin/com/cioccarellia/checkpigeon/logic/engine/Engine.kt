@@ -90,12 +90,6 @@ class Engine(
                 )
             }
         }
-
-        board.queryLastRankPiece()?.let {
-            val piece = board[it]
-            require(piece is Material.Dama)
-            board.set(it, Material.Damone(piece.color))
-        }
     }
 
     /**

@@ -100,6 +100,7 @@ class Board {
             }
         }
 
+        // Debugging
         matrix[4][2].material = Material.Damone(TileColor.WHITE)
     }
 
@@ -119,38 +120,23 @@ class Board {
         }
     }
 
-    fun queryLastRankPiece(): Coordinate? {
-        // white
-        matrix.forEach {
-            val firstRankPiece = it[0]
-            val lastRankPiece = it[7]
-
-
-            if (firstRankPiece.material == Material.Dama(color = TileColor.BLACK)) {
-                return firstRankPiece.coordinate
-            }
-
-            if (lastRankPiece.material == Material.Dama(color = TileColor.WHITE)) {
-                return lastRankPiece.coordinate
-            }
-        }
-
-        return null
-    }
-
     /**
      * Applies changes for a given move
      * */
     internal fun execute(validatedMove: Move) = with(validatedMove) {
         when (moveType) {
             MoveType.Capture -> {
-                blows?.toList()?.forEach(::remove)
                 captures.toList().forEach(::remove)
+                blows?.let { remove(it.first) }
                 swap(start, end)
             }
             MoveType.Movement -> {
                 swap(start, end)
             }
+        }
+
+        promotion?.let {
+            set(it, get(it).promoted())
         }
     }
 

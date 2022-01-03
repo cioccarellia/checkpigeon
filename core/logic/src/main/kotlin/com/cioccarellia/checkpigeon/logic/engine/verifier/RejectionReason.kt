@@ -21,7 +21,6 @@ enum class RejectionReason {
 
 
 
-
     /**
      * Starting movement square is void
      * */
@@ -38,7 +37,6 @@ enum class RejectionReason {
      * Movement/landing is logically disallowed
      * */
     MOVEMENT_DISALLOWED_MOVEMENT,
-    CAPTURE_DISALLOWED_MOVEMENT,
     CAPTURE_DISALLOWED_CAPTURE,
 
 
@@ -53,6 +51,12 @@ enum class RejectionReason {
      * */
     CAPTURE_CAPTURED_PIECES_NUMBER_MISMATCH,
 
+
+    /**
+     * A non-valid promotion has been inserted in the move
+     * */
+    CAPTURE_INJECTED_PROMOTION,
+
     /**
      * A capture has to collect non-empty material
      * */
@@ -63,7 +67,9 @@ enum class RejectionReason {
     CAPTURE_DAMONE_CAPTURE_MATERIAL,
 
 
-    /***/
+    /**
+     * Same-color piece was being captured
+     * */
     CAPTURE_CANNIBALISM,
 
 

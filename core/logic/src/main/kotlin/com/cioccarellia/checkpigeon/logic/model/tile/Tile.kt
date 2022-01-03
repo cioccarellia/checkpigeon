@@ -6,10 +6,16 @@ import com.cioccarellia.checkpigeon.logic.model.material.Material
 /**
  * Represents one of 64 tiles, with color, coordinates and material
  * */
-data class Tile(
+class Tile(
     val coordinate: Coordinate,
-    var material: Material
+    material: Material
 ) {
+    var material = material
+        set(value) {
+            require(material != Material.Empty && coordinate.parity)
+            field = value
+        }
+
     val color: TileColor
         get() = if (coordinate.parity) TileColor.BLACK else TileColor.WHITE
 }
