@@ -13,7 +13,6 @@ import com.cioccarellia.checkpigeon.logic.engine.internal.BoardPrinter
 import com.cioccarellia.checkpigeon.logic.engine.status.EngineStatus
 import com.cioccarellia.checkpigeon.logic.engine.verifier.MoveVerifier
 import com.cioccarellia.checkpigeon.logic.engine.verifier.VerificationResult
-import com.cioccarellia.checkpigeon.logic.model.material.Material
 import com.cioccarellia.checkpigeon.logic.model.player.Player
 import com.cioccarellia.checkpigeon.logic.model.tile.TileColor
 import kotlinx.coroutines.CoroutineScope
@@ -23,7 +22,6 @@ import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
-import kotlin.contracts.contract
 
 /**
  * Checkpigeon game com.cioccarellia.checkpigeon.logic.getEngine
@@ -123,7 +121,7 @@ class Engine(
                         when (val verification = MoveVerifier.verifyMove(event.submittedMove, board, status.gameStatus)) {
                             is VerificationResult.Passed -> {
                                 status.onMoveAccepted(verification.move, board)
-                                board.execute(verification.move)
+                                board.executeMoveForward(verification.move)
 
                                 postSubmissionGameEngineLogic()
 

@@ -12,7 +12,7 @@ class Tile(
 ) {
     var material = material
         set(value) {
-            require(material != Material.Empty && coordinate.parity)
+            require((material != Material.Empty && coordinate.parity) || (material == Material.Empty))
             field = value
         }
 

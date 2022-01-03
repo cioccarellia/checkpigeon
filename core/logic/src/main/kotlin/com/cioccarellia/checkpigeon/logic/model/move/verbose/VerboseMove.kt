@@ -28,4 +28,14 @@ data class VerboseMove(
 
     override val blows: Pair<Coordinate, Coordinate>?,
     val blownMaterial: Material?,
-) : MoveUnit()
+) : MoveUnit() {
+
+    init {
+        check(captures.size == capturedMaterial.size)
+        check((blows != null && blownMaterial != null) || (blows == null && blownMaterial == null))
+    }
+
+    override val promotion: Coordinate? = null
+
+    fun captureCoordsMaterialPairList() = captures.zip(capturedMaterial)
+}

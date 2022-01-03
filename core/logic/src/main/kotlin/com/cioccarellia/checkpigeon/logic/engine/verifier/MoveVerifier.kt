@@ -6,13 +6,29 @@ import com.cioccarellia.checkpigeon.logic.engine.status.GameStatus
 import com.cioccarellia.checkpigeon.logic.engine.verifier.VerificationResult.Failed
 import com.cioccarellia.checkpigeon.logic.engine.verifier.VerificationResult.Passed
 import com.cioccarellia.checkpigeon.logic.model.board.Coordinate
-import com.cioccarellia.checkpigeon.logic.model.board.Rank
 import com.cioccarellia.checkpigeon.logic.model.material.Material
 import com.cioccarellia.checkpigeon.logic.model.move.MoveType
 import com.cioccarellia.checkpigeon.logic.model.move.linear.Move
 import com.cioccarellia.checkpigeon.logic.model.tile.TileColor
 
 object MoveVerifier {
+
+    fun Move.toBlowMove(): Move? {
+        check(blows != null)
+
+        return try {
+            Move(
+                moveType = MoveType.Capture,
+                playingColor = !playingColor,
+                start = blows.first,
+                end = Direction.infer(start, blows.second).shiftedCoordinateBy2Diagonally(start),
+                captures = listOf(blows.second),
+                blows = null
+            )
+        } catch (iae: IllegalArgumentException) {
+            null
+        }
+    }
 
     fun isPromotionSquare(
         color: TileColor,
@@ -41,11 +57,31 @@ object MoveVerifier {
         }
 
         /*
-        * Move-dependent checks
+        * Move-dependent checks (without blow checks)
         * */
-        return when (move.moveType) {
+        val partialVerification = when (move.moveType) {
             MoveType.Movement -> verifyMovement(move, board, status)
             MoveType.Capture -> verifyCapture(move, board, status)
+        }
+
+        if (partialVerification is Failed || move.blows == null) {
+            return partialVerification
+        } else {
+            // Result is passed, and we have to check against blow errors.
+            val mockStatus = status.apply {
+                onMoveAccepted(move)
+            }
+
+            val mockBlowMove = move.toBlowMove()
+
+            return if (mockBlowMove == null) {
+                Failed(RejectionReason.BLOW_MOVE_DATA_INCOHERENCY)
+            } else {
+                when (verifyCapture(mockBlowMove, board, mockStatus)) {
+                    is Failed -> Failed(RejectionReason.BLOW_DISALLOWED_CAPTURE)
+                    is Passed -> partialVerification
+                }
+            }
         }
     }
 
@@ -123,18 +159,19 @@ object MoveVerifier {
 
                 when {
                     forwardLeftCheck -> {
-
+                        // good
                     }
                     forwardRightCheck -> {
-
+                        // good
                     }
                     backwardLeftCheck -> {
-
+                        // good
                     }
                     backwardRightCheck -> {
-
+                        // good
                     }
                     else -> {
+                        // fuck you
                         return Failed(RejectionReason.MOVEMENT_DISALLOWED_MOVEMENT)
                     }
                 }

@@ -15,11 +15,31 @@ class GameHistory : EngineVerboseMoveReceiver {
     private val blackMoves: MutableList<VerboseMove> = mutableListOf()
 
     fun boardAt(
-        moveNumber: Int,
-        board: Board
+        presentMoveNumber: Int,
+        pastMoveNumber: Int,
+        board: Board,
     ): Board {
-        require(moveNumber > 0)
+        require(presentMoveNumber > 0 && pastMoveNumber > 0 && pastMoveNumber <= presentMoveNumber) {
+            "Inconsistent presentMoveNumber=$presentMoveNumber and pastMoveNumber=$pastMoveNumber values"
+        }
 
+        if (pastMoveNumber != presentMoveNumber) {
+            for (descendingMoveNumber in presentMoveNumber downTo pastMoveNumber) {
+                board.executeMoveBackward(getVerboseMoveForMoveNumber(descendingMoveNumber))
+            }
+        }
+
+        return board
+    }
+
+    private fun getVerboseMoveForMoveNumber(moveNumber: Int) = if (moveNumber % 2 != 0) {
+        // Odd moves (1, 3, 5, ...) are white's
+        val index = (moveNumber - 1) / 2
+        whiteMoves[index]
+    } else {
+        // Even moves (2, 4, 6, ...) are black's
+        val index = (moveNumber / 2) - 1
+        blackMoves[index]
     }
 
     override fun onVerboseMoveAccepted(move: VerboseMove) {

@@ -6,6 +6,7 @@ import com.cioccarellia.checkpigeon.logic.model.board.Rank
 import com.cioccarellia.checkpigeon.logic.model.material.Material
 import com.cioccarellia.checkpigeon.logic.model.move.MoveType
 import com.cioccarellia.checkpigeon.logic.model.move.linear.Move
+import com.cioccarellia.checkpigeon.logic.model.move.verbose.VerboseMove
 import com.cioccarellia.checkpigeon.logic.model.tile.Tile
 import com.cioccarellia.checkpigeon.logic.model.tile.TileColor
 
@@ -121,9 +122,9 @@ class Board {
     }
 
     /**
-     * Applies changes for a given move
+     * Applies changes to the game matrix for a given move forward in time
      * */
-    internal fun execute(validatedMove: Move) = with(validatedMove) {
+    internal fun executeMoveForward(validatedMove: Move) = with(validatedMove) {
         when (moveType) {
             MoveType.Capture -> {
                 captures.toList().forEach(::remove)
@@ -137,6 +138,32 @@ class Board {
 
         promotion?.let {
             set(it, get(it).promoted())
+        }
+    }
+
+
+    /**
+     * Applies changes to the game matrix for a given move backward in time
+     * */
+    internal fun executeMoveBackward(verboseMove: VerboseMove) = with(verboseMove) {
+        when (moveType) {
+            MoveType.Capture -> {
+                captureCoordsMaterialPairList().forEach {
+                    set(it.first, it.second)
+                }
+                blows?.let {
+                    set(it.first, blownMaterial!!)
+                }
+
+                swap(start, end)
+            }
+            MoveType.Movement -> {
+                swap(start, end)
+            }
+        }
+
+        promotion?.let {
+            set(it, get(it).demoted())
         }
     }
 

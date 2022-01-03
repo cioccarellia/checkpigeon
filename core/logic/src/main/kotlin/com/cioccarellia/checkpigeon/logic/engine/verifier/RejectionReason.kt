@@ -73,5 +73,7 @@ enum class RejectionReason {
     CAPTURE_CANNIBALISM,
 
 
+    BLOW_MOVE_DATA_INCOHERENCY,
+    BLOW_DISALLOWED_CAPTURE
 
 }
