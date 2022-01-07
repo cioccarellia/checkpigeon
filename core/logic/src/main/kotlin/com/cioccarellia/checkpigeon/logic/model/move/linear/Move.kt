@@ -51,6 +51,5 @@ data class Move(
     /**
      * Generates draught notation for the given move
      * */
-    fun draughtNotation(): String =
-        start.checkersCoordinateNumber.toString() + moveType.symbol() + end.checkersCoordinateNumber.toString()
+    fun draughtNotation(): String = start.checkersCoordinateNumber.toString() + moveType.symbol() + end.checkersCoordinateNumber.toString()
 }

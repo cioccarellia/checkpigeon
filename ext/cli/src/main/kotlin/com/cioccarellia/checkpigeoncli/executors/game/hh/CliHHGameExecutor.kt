@@ -11,9 +11,9 @@ import com.cioccarellia.checkpigeon.logic.engine.events.Event
 import com.cioccarellia.checkpigeoncli.commands.Command.CreateGame.GameHumanVsHuman
 import com.cioccarellia.checkpigeoncli.commands.readCLI
 import com.cioccarellia.checkpigeoncli.executors.CommandExecutor
-import com.cioccarellia.checkpigeoncli.executors.game.input.CLICommand
-import com.cioccarellia.checkpigeoncli.executors.game.input.CommandParser
-import com.cioccarellia.checkpigeoncli.executors.game.input.ParsedMove
+import com.cioccarellia.checkpigeon.input.CLICommand
+import com.cioccarellia.checkpigeon.input.CommandParser
+import com.cioccarellia.checkpigeon.input.ParsedMove
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -55,7 +55,7 @@ class CliHHGameExecutor(
                     is ParsedMove.Success -> {
                         executorFlow.emit(
                             Event.SubmissionProposal.SubmissionRequest(
-                                submittedMove = parsedMove.parsedMove.move
+                                submittedMove = (parsedMove.parsedMove as ParsedMove.Success).move
                             )
                         )
 
@@ -63,7 +63,7 @@ class CliHHGameExecutor(
                         engine.stdoutBoard()
                     }
                     is ParsedMove.Failure -> {
-                        println("Error: ${parsedMove.parsedMove.message}")
+                        println("Error: ${(parsedMove.parsedMove as ParsedMove.Failure).message}")
                     }
                 }
                 CLICommand.Resignation -> {

@@ -10,6 +10,8 @@ version = "1.0.0"
 
 dependencies {
     testImplementation(kotlin("test"))
+    implementation(project(":core:logic"))
+
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.5.2")
 }
 

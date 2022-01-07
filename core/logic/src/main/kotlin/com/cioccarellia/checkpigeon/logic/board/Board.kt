@@ -10,7 +10,26 @@ import com.cioccarellia.checkpigeon.logic.model.move.verbose.VerboseMove
 import com.cioccarellia.checkpigeon.logic.model.tile.Tile
 import com.cioccarellia.checkpigeon.logic.model.tile.TileColor
 
-class Board {
+data class Board(
+    val matrix: Array<Array<Tile>> = Array(8) { fileIndex ->
+        // We fix the file (A through H)
+        val fileNumber = fileIndex + 1
+        val file = File.from(fileNumber)
+
+        Array(8) { rankIndex ->
+            /**
+             * Creates the final [Tile]s fixing a single file and sliding ranks up from A to H
+             * */
+            val slidingRank = Rank.from(rankIndex + 1)
+
+            //val file = File.from(fileIndex + 1)
+
+            Tile(
+                Coordinate(file, slidingRank), Material.Empty
+            )
+        }
+    }
+) {
     /**
      * Board matrix, representing the game state.
      *
@@ -61,24 +80,7 @@ class Board {
      *          matrix[0][2] = A3
      *          matrix[2][0] = C1
      * */
-    val matrix: Array<Array<Tile>> = Array(8) { fileIndex ->
-        // We fix the file (A through H)
-        val fileNumber = fileIndex + 1
-        val file = File.from(fileNumber)
 
-        Array(8) { rankIndex ->
-            /**
-             * Creates the final [Tile]s fixing a single file and sliding ranks up from A to H
-             * */
-            val slidingRank = Rank.from(rankIndex + 1)
-
-            //val file = File.from(fileIndex + 1)
-
-            Tile(
-                Coordinate(file, slidingRank), Material.Empty
-            )
-        }
-    }
 
     init {
         // Populates board
@@ -111,7 +113,7 @@ class Board {
     val blackPieceCount: Int
         get() = countPieces(TileColor.BLACK)
 
-    private fun countPieces(color: TileColor) = matrix.sumOf {
+    fun countPieces(color: TileColor) = matrix.sumOf {
         it.count { tile ->
             when (val material = tile.material) {
                 is Material.Dama -> material.color == color
@@ -124,7 +126,7 @@ class Board {
     /**
      * Applies changes to the game matrix for a given move forward in time
      * */
-    internal fun executeMoveForward(validatedMove: Move) = with(validatedMove) {
+    fun executeMoveForward(validatedMove: Move) = with(validatedMove) {
         when (moveType) {
             MoveType.Capture -> {
                 captures.toList().forEach(::remove)
@@ -145,7 +147,7 @@ class Board {
     /**
      * Applies changes to the game matrix for a given move backward in time
      * */
-    internal fun executeMoveBackward(verboseMove: VerboseMove) = with(verboseMove) {
+    fun executeMoveBackward(verboseMove: VerboseMove) = with(verboseMove) {
         when (moveType) {
             MoveType.Capture -> {
                 captureCoordsMaterialPairList().forEach {
@@ -185,5 +187,20 @@ class Board {
 
         tile(X).material = tile(Y).material
         tile(Y).material = tmpX
+    }
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+
+        other as Board
+
+        if (!matrix.contentDeepEquals(other.matrix)) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        return matrix.contentDeepHashCode()
     }
 }

@@ -1,8 +1,8 @@
-package com.cioccarellia.checkpigeoncli.executors.game.input
+package com.cioccarellia.checkpigeon.input
 
 import com.cioccarellia.checkpigeon.logic.model.tile.TileColor
 
-sealed class CLICommand() {
+sealed class CLICommand {
     class Move(val parsedMove: ParsedMove) : CLICommand()
     object DrawOffer : CLICommand()
     object Resignation : CLICommand()

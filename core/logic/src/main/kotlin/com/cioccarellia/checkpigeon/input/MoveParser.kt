@@ -1,4 +1,4 @@
-package com.cioccarellia.checkpigeoncli.executors.game.input
+package com.cioccarellia.checkpigeon.input
 
 import com.cioccarellia.checkpigeon.logic.board.Direction
 import com.cioccarellia.checkpigeon.logic.model.board.Coordinate

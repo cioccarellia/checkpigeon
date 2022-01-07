@@ -175,4 +175,6 @@ class Engine(
     ) {
         BoardPrinter.stdout(board, colorPerspective, highlights)
     }
+
+    fun expose() = board
 }
