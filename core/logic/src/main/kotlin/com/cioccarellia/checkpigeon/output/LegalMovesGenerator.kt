@@ -197,6 +197,8 @@ object LegalMovesGenerator {
         Material.Empty -> throw IllegalStateException()
     }
 
-    private fun generateCapture
+    private fun generateCapture() {
+
+    }
 
 }

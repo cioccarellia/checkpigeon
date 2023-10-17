@@ -36,6 +36,14 @@ private suspend fun initEngineCollector() {
             is Event.SubmissionProposal.SubmissionRejected -> {
                 rejectedMove = true
             }
+
+            is Event.DrawProposal.DrawAccepted -> TODO()
+            is Event.DrawProposal.DrawRejected -> TODO()
+            is Event.DrawProposal.DrawRequest -> TODO()
+            is Event.Message -> TODO()
+            is Event.Resignation -> TODO()
+            Event.StartGame -> TODO()
+            is Event.SubmissionProposal.SubmissionRequest -> TODO()
         }
     }
 }

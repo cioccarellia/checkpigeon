@@ -9,7 +9,7 @@ private const val BG_JUMP = 10
 /**
  * An enumeration of colors supported by most terminals. Can be applied to both foreground and background.
  */
-enum class Color(baseCode: Int) {
+enum class TerminalColor(baseCode: Int) {
     BLACK(30),
     RED(31),
     GREEN(32),

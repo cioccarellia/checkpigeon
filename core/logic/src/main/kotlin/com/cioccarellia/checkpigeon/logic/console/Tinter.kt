@@ -10,7 +10,7 @@ object Tinter {
      * @param color The color to use
      * @return The colored string
      */
-    fun f(string: String, color: Color) = tint(string, color.foreground)
+    fun f(string: String, color: TerminalColor) = tint(string, color.foreground)
 
     /**
      * Create a string that will be printed with the specified color as background
@@ -18,7 +18,7 @@ object Tinter {
      * @param color The color to use
      * @return The colored string
      */
-    fun b(string: String, color: Color) = tint(string, color.background)
+    fun b(string: String, color: TerminalColor) = tint(string, color.background)
 
     private fun tint(string: String, ansiString: String) = "$ansiString$string$RESET"
 }

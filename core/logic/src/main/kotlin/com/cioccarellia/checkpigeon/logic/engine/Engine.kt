@@ -93,7 +93,7 @@ class Engine(
     /**
      * Listens on the given input flow for events.
      * */
-    private suspend fun hookInputFlow() = inputFlow.collect { event ->
+    private suspend fun hookInputFlow(): Unit = inputFlow.collect { event ->
         engineLogger.d("Received event $event")
 
         when (event) {

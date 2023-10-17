@@ -1,4 +1,3 @@
-import MoveGenerator.generateLegalMoves
 import com.cioccarellia.checkpigeon.logic.board.Board
 import com.cioccarellia.checkpigeon.logic.engine.Engine
 import com.cioccarellia.checkpigeon.logic.model.board.Coordinate
@@ -8,7 +7,7 @@ import com.cioccarellia.checkpigeon.logic.model.tile.TileColor
 import com.cioccarellia.checkpigeon.output.LegalMovesGenerator
 
 object MoveGenerator {
-    fun Board.generateLegalMoves(
+    /*fun Board.generateLegalMoves(
          targetColor: TileColor,
          depth: Int
     ): Tree<Move> {
@@ -25,7 +24,7 @@ object MoveGenerator {
         } else {
             // Base case: return best move
         }
-    }
+    }*/
 
 }
 

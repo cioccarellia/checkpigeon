@@ -7,6 +7,6 @@ class CheckPigeon(
     var working = false
 
     suspend fun extractMove(): Move {
-
+        TODO()
     }
 }
