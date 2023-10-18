@@ -8,8 +8,6 @@ import com.cioccarellia.checkpigeon.logic.model.tile.TileColor
  * */
 sealed class GameEvent {
 
-    data object StartGame : GameEvent()
-
     data object DumpGame : GameEvent()
 
     data class SubmissionRequest(

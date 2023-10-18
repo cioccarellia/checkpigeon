@@ -25,7 +25,6 @@ class CliHHGameExecutor(
     private val command: GameHumanVsHuman
 ) : CommandExecutor<GameHumanVsHuman>(command) {
 
-    private val executorFlow = MutableSharedFlow<@ToEngine GameEvent>()
 
     private val engine = Engine(
         command.whitePlayer to command.blackPlayer,

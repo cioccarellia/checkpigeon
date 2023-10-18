@@ -108,20 +108,20 @@ object CommandParser {
                         when (val rhs = gameMode.split("=")[1]) {
                             "hh" -> {
                                 Command.CreateGame.GameHumanVsHuman(
-                                    blackPlayer = Player(blackAlias, TileColor.BLACK),
-                                    whitePlayer = Player(whiteAlias, TileColor.WHITE),
+                                    blackPlayer = Player(blackAlias, TileColor.BLACK, true),
+                                    whitePlayer = Player(whiteAlias, TileColor.WHITE, true),
                                 )
                             }
                             "he" -> {
                                 Command.CreateGame.GameHumanVsEngine(
-                                    blackPlayer = Player(blackAlias, TileColor.BLACK),
-                                    whitePlayer = Player(whiteAlias, TileColor.WHITE),
+                                    blackPlayer = Player(blackAlias, TileColor.BLACK, false),
+                                    whitePlayer = Player(whiteAlias, TileColor.WHITE, false),
                                 )
                             }
                             "ee" -> {
                                 Command.CreateGame.GameEngineVsEngine(
-                                    blackPlayer = Player(blackAlias, TileColor.BLACK),
-                                    whitePlayer = Player(whiteAlias, TileColor.WHITE),
+                                    blackPlayer = Player(blackAlias, TileColor.BLACK, false),
+                                    whitePlayer = Player(whiteAlias, TileColor.WHITE, false),
                                 )
                             }
                             else -> throw IllegalArgumentException("destination parameter \"$rhs\" is not valid. Allowed parameters: [hh|he|ee]")
