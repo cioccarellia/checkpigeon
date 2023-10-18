@@ -1,11 +1,10 @@
 import com.cioccarellia.checkpigeon.annotations.ToEngine
 import com.cioccarellia.checkpigeon.logic.engine.Engine
-import com.cioccarellia.checkpigeon.logic.engine.events.Event
+import com.cioccarellia.checkpigeon.logic.engine.events.GameEvent
 import com.cioccarellia.checkpigeon.logic.model.player.Player
 import com.cioccarellia.checkpigeon.logic.model.tile.TileColor
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
@@ -19,7 +18,7 @@ import kotlinx.coroutines.launch
  * - second determines engine depth
  * */
 
-private val executorFlow = MutableSharedFlow<@ToEngine Event>()
+private val executorFlow = MutableSharedFlow<@ToEngine GameEvent>()
 
 private val engine = Engine(
     Player("W", TileColor.WHITE) to Player("B", TileColor.BLACK),
@@ -30,20 +29,20 @@ private val engine = Engine(
 private suspend fun initEngineCollector() {
     engine.engineOutputFlow.collect {
         when (it) {
-            is Event.SubmissionProposal.SubmissionAccepted -> {
+            is GameEvent.SubmissionProposal.SubmissionAccepted -> {
                 print(it.processedMove.humanMoveNotation())
             }
-            is Event.SubmissionProposal.SubmissionRejected -> {
+            is GameEvent.SubmissionProposal.SubmissionRejected -> {
                 rejectedMove = true
             }
 
-            is Event.DrawProposal.DrawAccepted -> TODO()
-            is Event.DrawProposal.DrawRejected -> TODO()
-            is Event.DrawProposal.DrawRequest -> TODO()
-            is Event.Message -> TODO()
-            is Event.Resignation -> TODO()
-            Event.StartGame -> TODO()
-            is Event.SubmissionProposal.SubmissionRequest -> TODO()
+            is GameEvent.DrawProposal.DrawAccepted -> TODO()
+            is GameEvent.DrawProposal.DrawRejected -> TODO()
+            is GameEvent.DrawProposal.DrawRequest -> TODO()
+            is GameEvent.Message -> TODO()
+            is GameEvent.Resignation -> TODO()
+            GameEvent.StartGame -> TODO()
+            is GameEvent.SubmissionProposal.SubmissionRequest -> TODO()
         }
     }
 }
@@ -81,7 +80,7 @@ suspend fun main(args: Array<String>) {
             val engineMove = checkpigeon.extractMove()
 
             executorFlow.emit(
-                Event.SubmissionProposal.SubmissionRequest(
+                GameEvent.SubmissionProposal.SubmissionRequest(
                     submittedMove = engineMove
                 )
             )

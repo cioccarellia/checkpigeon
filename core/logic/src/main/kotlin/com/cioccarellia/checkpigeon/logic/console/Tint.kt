@@ -1,6 +1,6 @@
 package com.cioccarellia.checkpigeon.logic.console
 
-object Tinter {
+object Tint {
     private const val ESCAPE = '\u001B'
     private const val RESET = "$ESCAPE[0m"
 

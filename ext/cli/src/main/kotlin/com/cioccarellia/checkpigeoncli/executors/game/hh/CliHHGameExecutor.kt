@@ -7,7 +7,7 @@ import com.cioccarellia.checkpigeon.logic.console.green
 import com.cioccarellia.checkpigeon.logic.console.lightYellow
 import com.cioccarellia.checkpigeon.logic.console.red
 import com.cioccarellia.checkpigeon.logic.engine.Engine
-import com.cioccarellia.checkpigeon.logic.engine.events.Event
+import com.cioccarellia.checkpigeon.logic.engine.events.GameEvent
 import com.cioccarellia.checkpigeoncli.commands.Command.CreateGame.GameHumanVsHuman
 import com.cioccarellia.checkpigeoncli.commands.readCLI
 import com.cioccarellia.checkpigeoncli.executors.CommandExecutor
@@ -25,7 +25,7 @@ class CliHHGameExecutor(
     private val command: GameHumanVsHuman
 ) : CommandExecutor<GameHumanVsHuman>(command) {
 
-    private val executorFlow = MutableSharedFlow<@ToEngine Event>()
+    private val executorFlow = MutableSharedFlow<@ToEngine GameEvent>()
 
     private val engine = Engine(
         command.whitePlayer to command.blackPlayer,
@@ -44,7 +44,7 @@ class CliHHGameExecutor(
             initEngineCollector()
         }
 
-        executorFlow.emit(Event.StartGame)
+        executorFlow.emit(GameEvent.StartGame)
         engine.stdoutBoard()
 
         while (engine.status.gameStatus.isAlive) {
@@ -54,7 +54,7 @@ class CliHHGameExecutor(
                 is CLICommand.Move -> when (parsedMove.parsedMove) {
                     is ParsedMove.Success -> {
                         executorFlow.emit(
-                            Event.SubmissionProposal.SubmissionRequest(
+                            GameEvent.SubmissionProposal.SubmissionRequest(
                                 submittedMove = (parsedMove.parsedMove as ParsedMove.Success).move
                             )
                         )
@@ -68,12 +68,12 @@ class CliHHGameExecutor(
                 }
                 CLICommand.Resignation -> {
                     executorFlow.emit(
-                        Event.Resignation(color = engine.status.gameStatus.turnColor)
+                        GameEvent.Resignation(color = engine.status.gameStatus.turnColor)
                     )
                 }
                 CLICommand.DrawOffer -> {
                     executorFlow.emit(
-                        Event.DrawProposal.DrawRequest(color = engine.status.gameStatus.turnColor)
+                        GameEvent.DrawProposal.DrawRequest(color = engine.status.gameStatus.turnColor)
                     )
                 }
                 CLICommand.UnknownCommand -> {
@@ -90,14 +90,14 @@ class CliHHGameExecutor(
 
         engine.engineOutputFlow.collect {
             when (it) {
-                is Event.Message -> {
+                is GameEvent.Message -> {
                     println("Received Message \"${it.content}\"".red())
                 }
-                is Event.SubmissionProposal -> when (it) {
-                    is Event.SubmissionProposal.SubmissionAccepted -> {
+                is GameEvent.SubmissionProposal -> when (it) {
+                    is GameEvent.SubmissionProposal.SubmissionAccepted -> {
                         println("Engine accepted move".green())
                     }
-                    is Event.SubmissionProposal.SubmissionRejected -> {
+                    is GameEvent.SubmissionProposal.SubmissionRejected -> {
                         println("Move rejected: ${it.rejectionReason}.".red())
                     }
                     else -> {

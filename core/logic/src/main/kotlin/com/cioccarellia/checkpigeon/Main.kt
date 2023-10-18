@@ -1,11 +1,9 @@
 package com.cioccarellia.checkpigeon
 
-import com.cioccarellia.checkpigeon.annotations.ToEngine
 import com.cioccarellia.checkpigeon.logic.console.red
 import com.cioccarellia.checkpigeon.logic.console.yellow
-import com.cioccarellia.checkpigeon.logic.console.yellowBackground
 import com.cioccarellia.checkpigeon.logic.engine.Engine
-import com.cioccarellia.checkpigeon.logic.engine.events.Event
+import com.cioccarellia.checkpigeon.logic.engine.events.GameEvent
 import com.cioccarellia.checkpigeon.logic.model.board.Coordinate
 import com.cioccarellia.checkpigeon.logic.model.board.File
 import com.cioccarellia.checkpigeon.logic.model.board.FileLetter
@@ -15,51 +13,43 @@ import com.cioccarellia.checkpigeon.logic.model.move.linear.Move
 import com.cioccarellia.checkpigeon.logic.model.player.Player
 import com.cioccarellia.checkpigeon.logic.model.tile.TileColor
 import kotlinx.coroutines.*
-import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.collect
 
-val mainFlow = MutableSharedFlow<@ToEngine Event>()
+val engine = Engine(Player("Apium", TileColor.WHITE) to Player("Titi", TileColor.BLACK))
 
-val engine = Engine(
-    Player("Apium", TileColor.WHITE) to Player("Titi", TileColor.BLACK),
-    mainFlow
-)
 
-fun main(args: Array<String>): Unit = runBlocking {
-    mainFlow.emit(Event.StartGame)
+fun onResponse(responeSEvent: GameEvent) {
+    println("Received event from Engine".yellow())
 
-    /**
-     * Async Dispatcher reading flow, never terminating
-     * */
-    CoroutineScope(Dispatchers.Default).launch {
-        println("Initializing Main -> Engine collector".yellowBackground())
-        engine.engineOutputFlow.collect {
-            println("Received event from Engine".yellow())
+    when (responeSEvent) {
+        is GameEvent.Message -> {
+            println("Received Message \"${responeSEvent.content}\"".red())
+        }
 
-            when (it) {
-                is Event.Message -> {
-                    println("Received Message \"${it.content}\"".red())
-                }
-                is Event.SubmissionProposal -> when (it) {
-                    is Event.SubmissionProposal.SubmissionAccepted -> {
-                        println("Move accepted")
-                    }
-                    is Event.SubmissionProposal.SubmissionRejected -> {
+        is GameEvent.SubmissionProposal -> when (responeSEvent) {
+            is GameEvent.SubmissionProposal.SubmissionAccepted -> {
+                println("Move accepted")
+            }
 
-                    }
-                    else -> {
+            is GameEvent.SubmissionProposal.SubmissionRejected -> {
+                println("Move rejected")
+            }
 
-                    }
-                }
-                else -> {
+            else -> {
 
-                }
             }
         }
-    }
 
-    mainFlow.emit(
-        Event.Message("Sup")
+        else -> {
+
+        }
+    }
+}
+
+
+fun main(args: Array<String>): Unit = runBlocking {
+
+    engine.emit(
+        GameEvent.Message("Sup")
     )
 
     engine.stdoutBoard()
@@ -67,8 +57,8 @@ fun main(args: Array<String>): Unit = runBlocking {
     while (true) {
         println("White plays")
 
-        mainFlow.emit(
-            Event.SubmissionProposal.SubmissionRequest(
+        engine.emit(
+            GameEvent.SubmissionProposal.SubmissionRequest(
                 Move(
                     moveType = MoveType.Movement,
                     playingColor = TileColor.WHITE,
@@ -85,7 +75,11 @@ fun main(args: Array<String>): Unit = runBlocking {
         )
 
         delay(200)
-        engine.stdoutBoard(TileColor.BLACK, highlights = listOf(File(FileLetter.B) to Rank(4)))
+        engine.stdoutBoard(
+            TileColor.BLACK, highlights = listOf(
+                File(FileLetter.B) to Rank(4)
+            )
+        )
 
         break
     }

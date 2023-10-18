@@ -135,6 +135,7 @@ object MoveVerifier {
 
                 return Passed(move)
             }
+
             is Material.Damone -> {
                 if (movingMaterial.color != status.turnColor) {
                     // Wrong color piece
@@ -153,15 +154,19 @@ object MoveVerifier {
                     forwardLeftCheck -> {
                         // good
                     }
+
                     forwardRightCheck -> {
                         // good
                     }
+
                     backwardLeftCheck -> {
                         // good
                     }
+
                     backwardRightCheck -> {
                         // good
                     }
+
                     else -> {
                         // fuck you
                         return Failed(RejectionReason.MOVEMENT_DISALLOWED_MOVEMENT)
@@ -170,23 +175,13 @@ object MoveVerifier {
 
                 return Passed(move)
             }
+
             Material.Empty -> {
                 return Failed(RejectionReason.MOVEMENT_START_SQUARE_EMPTY)
             }
         }
     }
 
-    /**
-     * Tricky things
-     * - blows
-     * - black and white move in opposite directions, so you have to flip the north when black plays
-     *
-     *
-     *
-     *
-     *
-     *
-     * */
     private fun verifyCapture(
         move: Move,
         board: Board,
@@ -254,11 +249,13 @@ object MoveVerifier {
                                             Direction.NW.shiftedCoordinateBy2Diagonally(startJumpCoordinate)
                                         lastSuccessfulJumpLand = jumpDestination
                                     }
+
                                     forwardRightJumpCheck -> {
                                         val jumpDestination =
                                             Direction.NE.shiftedCoordinateBy2Diagonally(startJumpCoordinate)
                                         lastSuccessfulJumpLand = jumpDestination
                                     }
+
                                     else -> {
                                         return Failed(RejectionReason.CAPTURE_DISALLOWED_CAPTURE)
                                     }
@@ -283,17 +280,20 @@ object MoveVerifier {
                                             Direction.SE.shiftedCoordinateBy2Diagonally(startJumpCoordinate)
                                         lastSuccessfulJumpLand = jumpDestination
                                     }
+
                                     forwardRightJumpCheck -> {
                                         val jumpDestination =
                                             Direction.SW.shiftedCoordinateBy2Diagonally(startJumpCoordinate)
                                         lastSuccessfulJumpLand = jumpDestination
                                     }
+
                                     else -> {
                                         return Failed(RejectionReason.CAPTURE_DISALLOWED_CAPTURE)
                                     }
                                 }
                             }
                         }
+
                         is Material.Damone -> return Failed(RejectionReason.CAPTURE_DAMONE_CAPTURE_MATERIAL)
                         Material.Empty -> return Failed(RejectionReason.CAPTURE_EMPTY_CAPTURE_MATERIAL)
                     }
@@ -309,6 +309,7 @@ object MoveVerifier {
 
                 return Passed(move)
             }
+
             is Material.Damone -> {
                 if (move.captures.size > 9) {
                     // Damona captures are capped to 9, because they eventually run out of targets
@@ -363,21 +364,25 @@ object MoveVerifier {
                                     Direction.NW.shiftedCoordinateBy2Diagonally(startJumpCoordinate)
                                 lastSuccessfulJumpLand = jumpDestination
                             }
+
                             forwardRightJumpCheck -> {
                                 val jumpDestination =
                                     Direction.NE.shiftedCoordinateBy2Diagonally(startJumpCoordinate)
                                 lastSuccessfulJumpLand = jumpDestination
                             }
+
                             backwardLeftJumpCheck -> {
                                 val jumpDestination =
                                     Direction.SW.shiftedCoordinateBy2Diagonally(startJumpCoordinate)
                                 lastSuccessfulJumpLand = jumpDestination
                             }
+
                             backwardRightJumpCheck -> {
                                 val jumpDestination =
                                     Direction.SE.shiftedCoordinateBy2Diagonally(startJumpCoordinate)
                                 lastSuccessfulJumpLand = jumpDestination
                             }
+
                             else -> {
                                 return Failed(RejectionReason.CAPTURE_DISALLOWED_CAPTURE)
                             }
@@ -396,6 +401,7 @@ object MoveVerifier {
                                 return it
                             }
                         }
+
                         is Material.Damone -> {
                             if (capturedPiece.color == status.turnColor) {
                                 return Failed(RejectionReason.CAPTURE_CANNIBALISM)
@@ -405,17 +411,17 @@ object MoveVerifier {
                                 return it
                             }
                         }
+
                         Material.Empty -> return Failed(RejectionReason.CAPTURE_EMPTY_CAPTURE_MATERIAL)
                     }
                 }
 
                 return Passed(move)
             }
+
             Material.Empty -> {
                 return Failed(RejectionReason.CAPTURE_START_SQUARE_EMPTY)
             }
         }
-
     }
-
 }
