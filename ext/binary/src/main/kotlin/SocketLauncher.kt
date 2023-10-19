@@ -34,37 +34,38 @@ fun main(args: Array<String>): Unit = runBlocking {
 
     // loop for messages
     while (true) { // engine.status.gameStatus.isAlive
-        println("Waiting for messages")
+        println("Waiting for messages on socket...")
         val receivedMessage = reader.readLine()
 
-        println("Received message: $receivedMessage")
 
-        val event: GameEvent = TODO(); // parse move
+        println("Received message text: $receivedMessage")
 
-        when (event) {
+        when (val event: GameEvent = EventParser.parse(receivedMessage, engine.status.gameStatus.turnColor)) {
             GameEvent.DumpGame -> {
+                println("Dumping game...")
 
                 val turnColor = engine.status.gameStatus.turnColor
                 val isAlive = engine.status.gameStatus.isAlive
-
                 val gameMatrix = engine.expose().matrix
 
                 // write game dump out
                 writer.write("...");
             }
             is GameEvent.SubmissionRequest -> {
+                println("Got move ${event.submittedMove.humanMoveNotation()}")
                 // need to apply the given move
                 engine.applyMove(event.submittedMove)
 
                 // write ack and move on
-
                 writer.write("ack");
             }
 
             GameEvent.ActionRequest -> {
                 // need to produce a move
 
+
                 // and write it out
+                writer.write("...");
             }
         }
     }

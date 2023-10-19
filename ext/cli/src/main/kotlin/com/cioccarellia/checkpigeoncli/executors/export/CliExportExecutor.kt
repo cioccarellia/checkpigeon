@@ -7,7 +7,7 @@ class CliExportExecutor(
     private val command: ExportGame
 ) : CommandExecutor<ExportGame>(command) {
 
-    override suspend fun execute() {
+    override fun execute() {
         TODO("Not yet implemented")
     }
 }

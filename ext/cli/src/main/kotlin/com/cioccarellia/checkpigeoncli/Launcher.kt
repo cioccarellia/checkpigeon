@@ -10,10 +10,6 @@ import com.cioccarellia.checkpigeoncli.executors.export.CliExportExecutor
 import com.cioccarellia.checkpigeoncli.executors.game.hh.CliHHGameExecutor
 import com.cioccarellia.checkpigeoncli.executors.import.CliImportExecutor
 import com.cioccarellia.checkpigeoncli.utils.CLIUtil
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
-import kotlin.system.exitProcess
 
 /**
  * Core CLI
@@ -34,11 +30,7 @@ suspend fun main(args: Array<String>) {
                 onParseFailure(parsedCommand.message)
             }
             is ParsedCommand.Success -> {
-                val executed = CoroutineScope(Dispatchers.Default).async {
-                    onSuccessfulCommandParse(parsedCommand.command)
-                }
-
-                executed.await()
+                onSuccessfulCommandParse(parsedCommand.command)
             }
         }
 
@@ -53,7 +45,7 @@ fun onParseFailure(message: String) {
 suspend fun onSuccessfulCommandParse(command: Command) {
     when (command) {
         Exit -> {
-            exitProcess(0)
+
         }
         Help -> {
             CLIUtil.helpPage()

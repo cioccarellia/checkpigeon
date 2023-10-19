@@ -6,7 +6,7 @@ import com.cioccarellia.checkpigeoncli.executors.CommandExecutor
 class CliImportExecutor(
     private val command: ImportGame
 ) : CommandExecutor<ImportGame>(command) {
-    override suspend fun execute() {
+    override fun execute() {
         TODO("Not yet implemented")
     }
 }

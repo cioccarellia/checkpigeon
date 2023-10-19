@@ -11,6 +11,7 @@ import com.cioccarellia.checkpigeon.logic.engine.internal.BoardPrinter
 import com.cioccarellia.checkpigeon.logic.engine.status.EngineStatus
 import com.cioccarellia.checkpigeon.logic.engine.verifier.MoveVerifier
 import com.cioccarellia.checkpigeon.logic.engine.verifier.VerificationResult
+import com.cioccarellia.checkpigeon.logic.model.board.Coordinate
 import com.cioccarellia.checkpigeon.logic.model.move.linear.Move
 import com.cioccarellia.checkpigeon.logic.model.player.Player
 import com.cioccarellia.checkpigeon.logic.model.tile.TileColor
@@ -90,6 +91,15 @@ class Engine(
             }
         }
     }
+
+
+    fun stdoutBoardCoords(
+        colorPerspective: TileColor = status.gameStatus.turnColor,
+        highlights: List<Coordinate> = emptyList()
+    ) {
+        stdoutBoard(colorPerspective, highlights.map { it.file to it.rank })
+    }
+
 
     fun stdoutBoard(
         colorPerspective: TileColor = status.gameStatus.turnColor,
