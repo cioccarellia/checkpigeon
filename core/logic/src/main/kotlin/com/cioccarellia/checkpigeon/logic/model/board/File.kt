@@ -22,7 +22,12 @@ enum class FileLetter(val numeric: Int) {
     H(8);
 
     companion object {
-        fun from(numeric: Int): FileLetter = values()[numeric - 1]
+        fun from(numeric: Int): FileLetter = try {
+            entries[numeric - 1]
+        } catch (e: IndexOutOfBoundsException) {
+            throw IllegalArgumentException()
+        }
+
         fun from(char: Char): FileLetter = when(char.lowercaseChar()) {
             'a' -> A
             'b' -> B

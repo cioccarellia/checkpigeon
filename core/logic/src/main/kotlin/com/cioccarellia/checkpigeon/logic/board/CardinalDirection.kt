@@ -5,7 +5,7 @@ import com.cioccarellia.checkpigeon.logic.model.board.Coordinate
 /**
  * Board-dependent cardinal points.
  * */
-enum class Direction {
+enum class CardinalDirection {
     NE, SE, SW, NW;
 
     /**
@@ -32,7 +32,7 @@ enum class Direction {
         fun infer(
             start: Coordinate,
             end: Coordinate
-        ): Direction = when {
+        ): CardinalDirection = when {
             end.rawFile() - start.rawFile() > 0 && end.rawRank() - start.rawRank() > 0 -> NE
             end.rawFile() - start.rawFile() > 0 && end.rawRank() - start.rawRank() < 0 -> SE
             end.rawFile() - start.rawFile() < 0 && end.rawRank() - start.rawRank() < 0 -> SW

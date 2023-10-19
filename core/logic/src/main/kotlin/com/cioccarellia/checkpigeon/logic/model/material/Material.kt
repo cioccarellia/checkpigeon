@@ -14,9 +14,12 @@ sealed class Material {
     abstract fun promoted(): Material
     abstract fun demoted(): Material
 
+    abstract fun color(): TileColor?
+
     data class Dama(val color: TileColor) : Material() {
         override fun promoted() = Damone(color)
         override fun demoted() = throw IllegalStateException()
+        override fun color() = color
 
         override fun toString() = if (color == TileColor.BLACK) BLACK_DAMA else WHITE_DAMA
     }
@@ -24,6 +27,7 @@ sealed class Material {
     data class Damone(val color: TileColor) : Material() {
         override fun promoted() = throw IllegalStateException()
         override fun demoted() = Dama(color)
+        override fun color() = color
 
         override fun toString() = if (color == TileColor.BLACK) BLACK_DAMONE else WHITE_DAMONE
     }
@@ -31,6 +35,7 @@ sealed class Material {
     object Empty : Material() {
         override fun promoted() = throw IllegalStateException()
         override fun demoted() = throw IllegalStateException()
+        override fun color() = null
 
         override fun toString() = EMPTY_SQUARE
     }

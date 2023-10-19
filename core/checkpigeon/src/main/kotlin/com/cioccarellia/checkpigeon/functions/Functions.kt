@@ -2,6 +2,7 @@ package com.cioccarellia.checkpigeon.functions
 
 import com.cioccarellia.checkpigeon.MoveGenerator
 import com.cioccarellia.checkpigeon.generator.LegalMovesGenerator
+import com.cioccarellia.checkpigeon.generator.gen_all
 import com.cioccarellia.checkpigeon.logic.board.Board
 import com.cioccarellia.checkpigeon.logic.model.move.linear.Move
 import com.cioccarellia.checkpigeon.logic.model.tile.TileColor
@@ -50,9 +51,8 @@ fun Result(status: Status, move: Move): Status {
 
 
 
-
 fun Actions(status: Status): List<Move> {
-    return LegalMovesGenerator.generate(status.board)
+    return gen_all(status.board, status.playerColor)
 }
 
 

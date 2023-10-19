@@ -1,6 +1,6 @@
 package com.cioccarellia.checkpigeon.input
 
-import com.cioccarellia.checkpigeon.logic.board.Direction
+import com.cioccarellia.checkpigeon.logic.board.CardinalDirection
 import com.cioccarellia.checkpigeon.logic.model.board.Coordinate
 import com.cioccarellia.checkpigeon.logic.model.board.File
 import com.cioccarellia.checkpigeon.logic.model.board.FileLetter
@@ -62,7 +62,7 @@ object MoveParser {
             // at the end of the cycle, where the piece lands
             var lastJumpPosition: Coordinate? = null
             // at the end of the cycle, the direction of the last capture
-            var lastCaptureDirection: Direction? = null
+            var lastCaptureDirection: CardinalDirection? = null
 
             list.subList(1, list.size).forEachIndexed { i, coords ->
                 val lastStart: Coordinate = when (i) {
@@ -70,7 +70,7 @@ object MoveParser {
                     else -> lastJumpPosition!!
                 }
 
-                val direction = Direction.infer(lastStart, coords)
+                val direction = CardinalDirection.infer(lastStart, coords)
                 val landingCoordinates = direction.shiftedCoordinateBy1Diagonally(coords)
 
                 lastJumpPosition = landingCoordinates

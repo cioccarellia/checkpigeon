@@ -20,7 +20,7 @@ object MoveVerifier {
                 moveType = MoveType.Capture,
                 playingColor = !playingColor,
                 start = blows.first,
-                end = Direction.infer(start, blows.second).shiftedCoordinateBy2Diagonally(start),
+                end = CardinalDirection.infer(start, blows.second).shiftedCoordinateBy2Diagonally(start),
                 captures = listOf(blows.second),
                 blows = null
             )
@@ -107,8 +107,8 @@ object MoveVerifier {
                 // We can move by 1 square forward, left or right.
                 if (status.turnColor == TileColor.WHITE) {
                     // With white, forward = north
-                    val forwardLeftCheck = areCoordinatesCompatibleForMovement(move.start, move.end, Direction.NW)
-                    val forwardRightCheck = areCoordinatesCompatibleForMovement(move.start, move.end, Direction.NE)
+                    val forwardLeftCheck = areCoordinatesCompatibleForMovement(move.start, move.end, CardinalDirection.NW)
+                    val forwardRightCheck = areCoordinatesCompatibleForMovement(move.start, move.end, CardinalDirection.NE)
 
                     if (!forwardLeftCheck && !forwardRightCheck) {
                         // in case none of them is valid
@@ -116,8 +116,8 @@ object MoveVerifier {
                     }
                 } else {
                     // With black, forward = south
-                    val forwardLeftCheck = areCoordinatesCompatibleForMovement(move.start, move.end, Direction.SW)
-                    val forwardRightCheck = areCoordinatesCompatibleForMovement(move.start, move.end, Direction.SE)
+                    val forwardLeftCheck = areCoordinatesCompatibleForMovement(move.start, move.end, CardinalDirection.SW)
+                    val forwardRightCheck = areCoordinatesCompatibleForMovement(move.start, move.end, CardinalDirection.SE)
 
                     if (!forwardLeftCheck && !forwardRightCheck) {
                         // in case none of them is valid
@@ -145,10 +145,10 @@ object MoveVerifier {
 
                 // We can move by 1 square forward, left or right, or backward, left or right.
                 // in this case we check them all, player can go backward and forward.
-                val forwardLeftCheck = areCoordinatesCompatibleForMovement(move.start, move.end, Direction.NW)
-                val forwardRightCheck = areCoordinatesCompatibleForMovement(move.start, move.end, Direction.NE)
-                val backwardLeftCheck = areCoordinatesCompatibleForMovement(move.start, move.end, Direction.SW)
-                val backwardRightCheck = areCoordinatesCompatibleForMovement(move.start, move.end, Direction.SE)
+                val forwardLeftCheck = areCoordinatesCompatibleForMovement(move.start, move.end, CardinalDirection.NW)
+                val forwardRightCheck = areCoordinatesCompatibleForMovement(move.start, move.end, CardinalDirection.NE)
+                val backwardLeftCheck = areCoordinatesCompatibleForMovement(move.start, move.end, CardinalDirection.SW)
+                val backwardRightCheck = areCoordinatesCompatibleForMovement(move.start, move.end, CardinalDirection.SE)
 
                 when {
                     forwardLeftCheck -> {
@@ -234,25 +234,25 @@ object MoveVerifier {
                                 val forwardLeftJumpCheck = areCoordinatesCompatibleForSingleCaptureJump(
                                     startJump = startJumpCoordinate,
                                     middleJump = currentCaptureCoords,
-                                    jumpDirection = Direction.NW
+                                    jumpDirection = CardinalDirection.NW
                                 )
 
                                 val forwardRightJumpCheck = areCoordinatesCompatibleForSingleCaptureJump(
                                     startJump = startJumpCoordinate,
                                     middleJump = currentCaptureCoords,
-                                    jumpDirection = Direction.NE
+                                    jumpDirection = CardinalDirection.NE
                                 )
 
                                 when {
                                     forwardLeftJumpCheck -> {
                                         val jumpDestination =
-                                            Direction.NW.shiftedCoordinateBy2Diagonally(startJumpCoordinate)
+                                            CardinalDirection.NW.shiftedCoordinateBy2Diagonally(startJumpCoordinate)
                                         lastSuccessfulJumpLand = jumpDestination
                                     }
 
                                     forwardRightJumpCheck -> {
                                         val jumpDestination =
-                                            Direction.NE.shiftedCoordinateBy2Diagonally(startJumpCoordinate)
+                                            CardinalDirection.NE.shiftedCoordinateBy2Diagonally(startJumpCoordinate)
                                         lastSuccessfulJumpLand = jumpDestination
                                     }
 
@@ -265,25 +265,25 @@ object MoveVerifier {
                                 val forwardLeftJumpCheck = areCoordinatesCompatibleForSingleCaptureJump(
                                     startJump = startJumpCoordinate,
                                     middleJump = currentCaptureCoords,
-                                    jumpDirection = Direction.SE
+                                    jumpDirection = CardinalDirection.SE
                                 )
 
                                 val forwardRightJumpCheck = areCoordinatesCompatibleForSingleCaptureJump(
                                     startJump = startJumpCoordinate,
                                     middleJump = currentCaptureCoords,
-                                    jumpDirection = Direction.SW
+                                    jumpDirection = CardinalDirection.SW
                                 )
 
                                 when {
                                     forwardLeftJumpCheck -> {
                                         val jumpDestination =
-                                            Direction.SE.shiftedCoordinateBy2Diagonally(startJumpCoordinate)
+                                            CardinalDirection.SE.shiftedCoordinateBy2Diagonally(startJumpCoordinate)
                                         lastSuccessfulJumpLand = jumpDestination
                                     }
 
                                     forwardRightJumpCheck -> {
                                         val jumpDestination =
-                                            Direction.SW.shiftedCoordinateBy2Diagonally(startJumpCoordinate)
+                                            CardinalDirection.SW.shiftedCoordinateBy2Diagonally(startJumpCoordinate)
                                         lastSuccessfulJumpLand = jumpDestination
                                     }
 
@@ -336,50 +336,50 @@ object MoveVerifier {
                         val forwardLeftJumpCheck = areCoordinatesCompatibleForSingleCaptureJump(
                             startJump = startJumpCoordinate,
                             middleJump = currentCaptureCoords,
-                            jumpDirection = Direction.NW
+                            jumpDirection = CardinalDirection.NW
                         )
 
                         val forwardRightJumpCheck = areCoordinatesCompatibleForSingleCaptureJump(
                             startJump = startJumpCoordinate,
                             middleJump = currentCaptureCoords,
-                            jumpDirection = Direction.NE
+                            jumpDirection = CardinalDirection.NE
                         )
 
                         val backwardRightJumpCheck = areCoordinatesCompatibleForSingleCaptureJump(
                             startJump = startJumpCoordinate,
                             middleJump = currentCaptureCoords,
-                            jumpDirection = Direction.SE
+                            jumpDirection = CardinalDirection.SE
                         )
 
                         val backwardLeftJumpCheck = areCoordinatesCompatibleForSingleCaptureJump(
                             startJump = startJumpCoordinate,
                             middleJump = currentCaptureCoords,
-                            jumpDirection = Direction.SW
+                            jumpDirection = CardinalDirection.SW
                         )
 
 
                         when {
                             forwardLeftJumpCheck -> {
                                 val jumpDestination =
-                                    Direction.NW.shiftedCoordinateBy2Diagonally(startJumpCoordinate)
+                                    CardinalDirection.NW.shiftedCoordinateBy2Diagonally(startJumpCoordinate)
                                 lastSuccessfulJumpLand = jumpDestination
                             }
 
                             forwardRightJumpCheck -> {
                                 val jumpDestination =
-                                    Direction.NE.shiftedCoordinateBy2Diagonally(startJumpCoordinate)
+                                    CardinalDirection.NE.shiftedCoordinateBy2Diagonally(startJumpCoordinate)
                                 lastSuccessfulJumpLand = jumpDestination
                             }
 
                             backwardLeftJumpCheck -> {
                                 val jumpDestination =
-                                    Direction.SW.shiftedCoordinateBy2Diagonally(startJumpCoordinate)
+                                    CardinalDirection.SW.shiftedCoordinateBy2Diagonally(startJumpCoordinate)
                                 lastSuccessfulJumpLand = jumpDestination
                             }
 
                             backwardRightJumpCheck -> {
                                 val jumpDestination =
-                                    Direction.SE.shiftedCoordinateBy2Diagonally(startJumpCoordinate)
+                                    CardinalDirection.SE.shiftedCoordinateBy2Diagonally(startJumpCoordinate)
                                 lastSuccessfulJumpLand = jumpDestination
                             }
 

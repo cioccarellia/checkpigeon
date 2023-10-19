@@ -16,7 +16,7 @@ typealias GameMatrix = Array<Array<Tile>>
 /**
  * Board-printing utility
  * */
-internal object BoardPrinter {
+object BoardPrinter {
 
     /**
      * Prints board to standard output and returns it
@@ -45,7 +45,13 @@ internal object BoardPrinter {
      *          8	| ○ |   | ○ |   | ○ |   | ○ |   |
      *                H   G   F   E   D   C   B   A
      * */
-    internal fun stdout(
+    fun stdoutc(
+        board: Board,
+        color: TileColor,
+        highlights: List<Coordinate> = listOf()
+    ) = stdout(board, color, highlights.map { it.file to it.rank })
+
+    fun stdout(
         board: Board,
         color: TileColor,
         highlights: List<Pair<File, Rank>> = listOf()

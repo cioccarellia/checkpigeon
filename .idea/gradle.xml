@@ -16,7 +16,6 @@
             <option value="$PROJECT_DIR$/ext" />
             <option value="$PROJECT_DIR$/ext/binary" />
             <option value="$PROJECT_DIR$/ext/cli" />
-            <option value="$PROJECT_DIR$/ext/server" />
           </set>
         </option>
       </GradleProjectSettings>

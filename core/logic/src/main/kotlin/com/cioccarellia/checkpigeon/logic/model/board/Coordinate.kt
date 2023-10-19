@@ -51,8 +51,15 @@ data class Coordinate(
             File.from(file), Rank.from(rank)
         )
 
-
         fun pair(file: Int, rank: Int) = File.from(file) to Rank.from(rank)
-
     }
+
+
+    fun shifted(fileDelta: Int, rankDelta: Int): Coordinate {
+        return Coordinate(
+            File.from(this.file.letter.numeric + fileDelta),
+            Rank.from(this.rank.number + rankDelta)
+        )
+    }
+
 }

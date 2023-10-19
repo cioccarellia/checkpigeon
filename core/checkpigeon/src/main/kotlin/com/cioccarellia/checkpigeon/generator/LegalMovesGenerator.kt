@@ -1,7 +1,7 @@
 package com.cioccarellia.checkpigeon.generator
 
 import com.cioccarellia.checkpigeon.logic.board.Board
-import com.cioccarellia.checkpigeon.logic.board.Direction
+import com.cioccarellia.checkpigeon.logic.board.CardinalDirection
 import com.cioccarellia.checkpigeon.logic.board.areCoordinatesCompatibleForMovement
 import com.cioccarellia.checkpigeon.logic.board.isPromotionSquare
 import com.cioccarellia.checkpigeon.logic.model.board.Coordinate
@@ -23,8 +23,8 @@ object LegalMovesGenerator {
             val color = material.color
 
             if (color == TileColor.WHITE) {
-                val landingNWSquare = Direction.NW.shiftedCoordinateBy1Diagonally(start)
-                if (areCoordinatesCompatibleForMovement(start, landingNWSquare, Direction.NW)) {
+                val landingNWSquare = CardinalDirection.NW.shiftedCoordinateBy1Diagonally(start)
+                if (areCoordinatesCompatibleForMovement(start, landingNWSquare, CardinalDirection.NW)) {
                     partialMoves.add(
                         Move(
                             moveType = MoveType.Movement,
@@ -41,8 +41,8 @@ object LegalMovesGenerator {
                     )
                 }
 
-                val landingNESquare = Direction.NE.shiftedCoordinateBy1Diagonally(start)
-                if (areCoordinatesCompatibleForMovement(start, landingNESquare, Direction.NE)) {
+                val landingNESquare = CardinalDirection.NE.shiftedCoordinateBy1Diagonally(start)
+                if (areCoordinatesCompatibleForMovement(start, landingNESquare, CardinalDirection.NE)) {
                     partialMoves.add(
                         Move(
                             moveType = MoveType.Movement,
@@ -59,8 +59,8 @@ object LegalMovesGenerator {
                     )
                 }
             } else {
-                val landingSWSquare = Direction.SW.shiftedCoordinateBy1Diagonally(start)
-                if (areCoordinatesCompatibleForMovement(start, landingSWSquare, Direction.SW)) {
+                val landingSWSquare = CardinalDirection.SW.shiftedCoordinateBy1Diagonally(start)
+                if (areCoordinatesCompatibleForMovement(start, landingSWSquare, CardinalDirection.SW)) {
                     partialMoves.add(
                         Move(
                             moveType = MoveType.Movement,
@@ -77,8 +77,8 @@ object LegalMovesGenerator {
                     )
                 }
 
-                val landingSESquare = Direction.SE.shiftedCoordinateBy1Diagonally(start)
-                if (areCoordinatesCompatibleForMovement(start, landingSESquare, Direction.SE)) {
+                val landingSESquare = CardinalDirection.SE.shiftedCoordinateBy1Diagonally(start)
+                if (areCoordinatesCompatibleForMovement(start, landingSESquare, CardinalDirection.SE)) {
                     partialMoves.add(
                         Move(
                             moveType = MoveType.Movement,
@@ -103,8 +103,8 @@ object LegalMovesGenerator {
             val start = mc.second
             val color = material.color
 
-            val landingNWSquare = Direction.NW.shiftedCoordinateBy1Diagonally(start)
-            if (areCoordinatesCompatibleForMovement(start, landingNWSquare, Direction.NW)) {
+            val landingNWSquare = CardinalDirection.NW.shiftedCoordinateBy1Diagonally(start)
+            if (areCoordinatesCompatibleForMovement(start, landingNWSquare, CardinalDirection.NW)) {
                 partialMoves.add(
                     Move(
                         moveType = MoveType.Movement,
@@ -121,8 +121,8 @@ object LegalMovesGenerator {
                 )
             }
 
-            val landingNESquare = Direction.NE.shiftedCoordinateBy1Diagonally(start)
-            if (areCoordinatesCompatibleForMovement(start, landingNESquare, Direction.NE)) {
+            val landingNESquare = CardinalDirection.NE.shiftedCoordinateBy1Diagonally(start)
+            if (areCoordinatesCompatibleForMovement(start, landingNESquare, CardinalDirection.NE)) {
                 partialMoves.add(
                     Move(
                         moveType = MoveType.Movement,
@@ -138,8 +138,8 @@ object LegalMovesGenerator {
                     }
                 )
             }
-            val landingSWSquare = Direction.SW.shiftedCoordinateBy1Diagonally(start)
-            if (areCoordinatesCompatibleForMovement(start, landingSWSquare, Direction.SW)) {
+            val landingSWSquare = CardinalDirection.SW.shiftedCoordinateBy1Diagonally(start)
+            if (areCoordinatesCompatibleForMovement(start, landingSWSquare, CardinalDirection.SW)) {
                 partialMoves.add(
                     Move(
                         moveType = MoveType.Movement,
@@ -156,8 +156,8 @@ object LegalMovesGenerator {
                 )
             }
 
-            val landingSESquare = Direction.SE.shiftedCoordinateBy1Diagonally(start)
-            if (areCoordinatesCompatibleForMovement(start, landingSESquare, Direction.SE)) {
+            val landingSESquare = CardinalDirection.SE.shiftedCoordinateBy1Diagonally(start)
+            if (areCoordinatesCompatibleForMovement(start, landingSESquare, CardinalDirection.SE)) {
                 partialMoves.add(
                     Move(
                         moveType = MoveType.Movement,

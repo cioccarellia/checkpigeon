@@ -17,20 +17,20 @@ fun isPromotionSquare(
  * Returns whether a movement is allowed for a certain coordinate, in order
  * not to fall of the board.
  * */
-fun isMovementLegal(coordinate: Coordinate, direction: Direction) = when (direction) {
+fun isMovementLegal(coordinate: Coordinate, direction: CardinalDirection) = when (direction) {
     // east
-    Direction.NE -> coordinate.file.letter.numeric <= 7 && coordinate.rank.number <= 7
-    Direction.SE -> coordinate.file.letter.numeric <= 7 && coordinate.rank.number >= 2
+    CardinalDirection.NE -> coordinate.file.letter.numeric <= 7 && coordinate.rank.number <= 7
+    CardinalDirection.SE -> coordinate.file.letter.numeric <= 7 && coordinate.rank.number >= 2
 
     // west
-    Direction.SW -> coordinate.file.letter.numeric >= 2 && coordinate.rank.number >= 2
-    Direction.NW -> coordinate.file.letter.numeric >= 2 && coordinate.rank.number <= 7
+    CardinalDirection.SW -> coordinate.file.letter.numeric >= 2 && coordinate.rank.number >= 2
+    CardinalDirection.NW -> coordinate.file.letter.numeric >= 2 && coordinate.rank.number <= 7
 }
 
 /**
  * Returns whether a 1-diagonal movement from [start] to [end] through the [direction] is legal and matches the given direction.
  * */
-fun areCoordinatesCompatibleForMovement(start: Coordinate, end: Coordinate, direction: Direction) =
+fun areCoordinatesCompatibleForMovement(start: Coordinate, end: Coordinate, direction: CardinalDirection) =
     if (isMovementLegal(start, direction)) {
         val theoreticalCoordinate = direction.shiftedCoordinateBy1Diagonally(start)
 
@@ -38,14 +38,14 @@ fun areCoordinatesCompatibleForMovement(start: Coordinate, end: Coordinate, dire
     } else false
 
 
-fun isJumpLegal(coordinate: Coordinate, direction: Direction) = when (direction) {
+fun isJumpLegal(coordinate: Coordinate, direction: CardinalDirection) = when (direction) {
     // east
-    Direction.NE -> coordinate.file.letter.numeric <= 6 && coordinate.rank.number <= 6
-    Direction.SE -> coordinate.file.letter.numeric <= 6 && coordinate.rank.number >= 3
+    CardinalDirection.NE -> coordinate.file.letter.numeric <= 6 && coordinate.rank.number <= 6
+    CardinalDirection.SE -> coordinate.file.letter.numeric <= 6 && coordinate.rank.number >= 3
 
     // west
-    Direction.SW -> coordinate.file.letter.numeric >= 3 && coordinate.rank.number >= 3
-    Direction.NW -> coordinate.file.letter.numeric >= 3 && coordinate.rank.number <= 6
+    CardinalDirection.SW -> coordinate.file.letter.numeric >= 3 && coordinate.rank.number >= 3
+    CardinalDirection.NW -> coordinate.file.letter.numeric >= 3 && coordinate.rank.number <= 6
 }
 
 
@@ -56,7 +56,7 @@ fun isJumpLegal(coordinate: Coordinate, direction: Direction) = when (direction)
 fun areCoordinatesCompatibleForSingleCaptureJump(
     startJump: Coordinate,
     middleJump: Coordinate,
-    jumpDirection: Direction
+    jumpDirection: CardinalDirection
 ) = if (isJumpLegal(startJump, jumpDirection)) {
     val theoreticalMiddleCoordinate = jumpDirection.shiftedCoordinateBy1Diagonally(startJump)
 
