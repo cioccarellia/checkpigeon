@@ -1,10 +1,4 @@
-import com.cioccarellia.checkpigeon.logic.board.Board
-import com.cioccarellia.checkpigeon.logic.engine.Engine
-import com.cioccarellia.checkpigeon.logic.model.board.Coordinate
-import com.cioccarellia.checkpigeon.logic.model.material.Material
-import com.cioccarellia.checkpigeon.logic.model.move.linear.Move
-import com.cioccarellia.checkpigeon.logic.model.tile.TileColor
-import com.cioccarellia.checkpigeon.output.LegalMovesGenerator
+package com.cioccarellia.checkpigeon
 
 object MoveGenerator {
     /*fun Board.generateLegalMoves(

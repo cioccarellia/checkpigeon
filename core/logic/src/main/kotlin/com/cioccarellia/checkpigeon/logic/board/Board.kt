@@ -104,7 +104,7 @@ data class Board(
         }
 
         // Debugging
-        matrix[4][2].material = Material.Damone(TileColor.WHITE)
+        // matrix[4][2].material = Material.Damone(TileColor.WHITE)
     }
 
     val whitePieceCount: Int

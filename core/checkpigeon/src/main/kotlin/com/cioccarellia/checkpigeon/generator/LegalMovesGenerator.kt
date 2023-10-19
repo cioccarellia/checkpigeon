@@ -1,4 +1,4 @@
-package com.cioccarellia.checkpigeon.output
+package com.cioccarellia.checkpigeon.generator
 
 import com.cioccarellia.checkpigeon.logic.board.Board
 import com.cioccarellia.checkpigeon.logic.board.Direction
@@ -10,15 +10,13 @@ import com.cioccarellia.checkpigeon.logic.model.move.MoveType
 import com.cioccarellia.checkpigeon.logic.model.move.linear.Move
 import com.cioccarellia.checkpigeon.logic.model.tile.TileColor
 
-typealias MC = Pair<Material, Coordinate>
-
 object LegalMovesGenerator {
     fun generate(
         board: Board,
-        mc: MC
+        mc: Pair<Material, Coordinate>
     ): List<Move> = movements(mc) + captures(mc)
 
-    private inline fun movements(mc: MC): List<Move> = when (val material = mc.first) {
+    private fun movements(mc: Pair<Material, Coordinate>): List<Move> = when (val material = mc.first) {
         is Material.Dama -> {
             val partialMoves = mutableListOf<Move>()
             val start = mc.second
@@ -182,9 +180,10 @@ object LegalMovesGenerator {
     }
 
 
-    private inline fun captures(mc: MC): List<Move> = when (val material = mc.first) {
+    private fun captures(mc: Pair<Material, Coordinate>): List<Move> = when (val material = mc.first) {
         is Material.Dama -> {
             val partialMoves = mutableListOf<Move>()
+
 
 
             partialMoves
@@ -192,13 +191,11 @@ object LegalMovesGenerator {
         is Material.Damone -> {
             val partialMoves = mutableListOf<Move>()
 
+
+
             partialMoves
         }
         Material.Empty -> throw IllegalStateException()
-    }
-
-    private fun generateCapture() {
-
     }
 
 }

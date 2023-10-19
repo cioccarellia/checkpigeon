@@ -1,7 +1,6 @@
 package com.cioccarellia.checkpigeon.logic.model.board
 
 import com.cioccarellia.checkpigeon.logic.model.board.ext.plus
-import com.cioccarellia.checkpigeon.logic.model.tile.Tile
 
 /**
  * Represents a single board tile, with its file and rank.
@@ -51,5 +50,9 @@ data class Coordinate(
         fun raw(file: Int, rank: Int) = Coordinate(
             File.from(file), Rank.from(rank)
         )
+
+
+        fun pair(file: Int, rank: Int) = File.from(file) to Rank.from(rank)
+
     }
 }

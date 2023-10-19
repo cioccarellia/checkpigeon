@@ -1,6 +1,7 @@
 package com.cioccarellia.checkpigeon.logic
 
 import com.cioccarellia.checkpigeon.logic.board.Board
+import com.cioccarellia.checkpigeon.logic.engine.internal.BoardPrinter
 import com.cioccarellia.checkpigeon.logic.model.board.Coordinate
 import com.cioccarellia.checkpigeon.logic.model.material.Material
 import com.cioccarellia.checkpigeon.logic.model.tile.TileColor
@@ -13,20 +14,28 @@ class MatrixTests {
 
     @Test
     fun checkBorderCoords() {
+        BoardPrinter.stdout(board, TileColor.WHITE, listOf(Coordinate.pair(1,1), Coordinate.pair(1,8), Coordinate.pair(8,1),  Coordinate.pair(8,8)))
+
         // A file extremes
         val a1 = board.matrix[0][0]
         assertEquals(Coordinate.raw(1,1), a1.coordinate)
+        assertEquals(Material.Dama(TileColor.WHITE), a1.material)
+
 
         val a8 = board.matrix[0][7]
         assertEquals(Coordinate.raw(1,8), a8.coordinate)
+        assertEquals(Material.Empty, a8.material)
 
 
         // H file extremes
         val h1 = board.matrix[7][0]
         assertEquals(Coordinate.raw(8,1), h1.coordinate)
+        assertEquals(Material.Empty, h1.material)
+
 
         val h8 = board.matrix[7][7]
         assertEquals(Coordinate.raw(8,8), h8.coordinate)
+        assertEquals(Material.Dama(TileColor.BLACK), h8.material)
     }
 
 

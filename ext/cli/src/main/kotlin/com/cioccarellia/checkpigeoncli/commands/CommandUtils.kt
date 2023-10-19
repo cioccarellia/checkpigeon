@@ -2,12 +2,12 @@ package com.cioccarellia.checkpigeoncli.commands
 
 fun readCLI(tag: String): String {
     print("$tag > ")
-    return readLine()!!
+    return readln()
 }
 
 fun readCommand(tag: String): ParsedCommand {
     println("$tag > ")
-    return CommandParser.convert(readLine())
+    return CommandParser.convert(readlnOrNull())
 }
 
 fun readCommandFromArgs(tag: String, args: Array<String>): ParsedCommand {

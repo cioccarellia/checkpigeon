@@ -7,12 +7,13 @@ import com.cioccarellia.checkpigeon.input.ParsedMove
 import com.cioccarellia.checkpigeon.logic.console.cyan
 import com.cioccarellia.checkpigeon.logic.console.red
 import com.cioccarellia.checkpigeon.logic.engine.Engine
-import com.cioccarellia.checkpigeon.logic.engine.Highlights
 import com.cioccarellia.checkpigeoncli.commands.Command.CreateGame.GameHumanVsHuman
 import com.cioccarellia.checkpigeoncli.commands.readCLI
 import com.cioccarellia.checkpigeoncli.executors.CommandExecutor
-import kotlinx.coroutines.delay
 
+/**
+ * Game executor for human-to-human games, requiring continuous CLI input
+ * */
 class CliHHGameExecutor(
     private val command: GameHumanVsHuman
 ) : CommandExecutor<GameHumanVsHuman>(command) {
@@ -33,7 +34,7 @@ class CliHHGameExecutor(
 
         while (engine.status.gameStatus.isAlive) {
             when (val parsedMove = processInputMove()) {
-                is CLICommand.Move -> when (val xmov = parsedMove.parsedMove) {
+                is CLICommand.XMove -> when (val xmov = parsedMove.parsedMove) {
                     is ParsedMove.Success -> {
                         engine.applyMove(xmov.move)
                         engine.stdoutBoardCoords(highlights = listOf(xmov.move.end))

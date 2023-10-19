@@ -48,7 +48,7 @@ internal object BoardPrinter {
     internal fun stdout(
         board: Board,
         color: TileColor,
-        highlights: Highlights
+        highlights: List<Pair<File, Rank>> = listOf()
     ) = buildString {
         val transposedMatrix: GameMatrix = Array(8) { rowIndex ->
             Array(8) { columnIndex ->

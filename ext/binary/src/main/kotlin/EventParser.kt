@@ -3,11 +3,11 @@ import com.cioccarellia.checkpigeon.input.ParsedMove
 import com.cioccarellia.checkpigeon.logic.engine.events.GameEvent
 import com.cioccarellia.checkpigeon.logic.model.tile.TileColor
 
-private const val DUMP = "dump_"
-private const val NOTIFY = "notify_"
-private const val ACTION = "action_"
-
 object EventParser {
+
+    private const val DUMP = "dump_"
+    private const val NOTIFY = "notify_"
+    private const val ACTION = "action_"
 
     fun parse(protoStream: String, currentPlayerColor: TileColor): GameEvent = when {
         protoStream.startsWith(DUMP) -> {
@@ -31,7 +31,8 @@ object EventParser {
             GameEvent.ActionRequest;
         }
 
-        else -> TODO()
+        else -> {
+            throw IllegalArgumentException()
+        }
     }
-
 }

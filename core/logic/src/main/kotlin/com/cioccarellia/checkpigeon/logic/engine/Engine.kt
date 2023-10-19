@@ -1,8 +1,6 @@
 package com.cioccarellia.checkpigeon.logic.engine
 
 import com.cioccarellia.checkpigeon.debug.CustomLogger
-import com.cioccarellia.checkpigeon.debug.d
-import com.cioccarellia.checkpigeon.debug.w
 import com.cioccarellia.checkpigeon.ext.findPlayerWithColor
 import com.cioccarellia.checkpigeon.logic.board.Board
 import com.cioccarellia.checkpigeon.logic.engine.events.GameEvent
@@ -50,7 +48,7 @@ class Engine(
         status.onGameStarted()
     }
 
-    private fun postSubmissionGameEngineLogic() {
+    private fun afterMoveSubmissionGameEngineLogic() {
         when {
             board.whitePieceCount == 0 -> {
                 status.onGameEnded(
@@ -78,7 +76,7 @@ class Engine(
                 status.onMoveAccepted(verification.move, board)
                 board.executeMoveForward(verification.move)
 
-                postSubmissionGameEngineLogic()
+                afterMoveSubmissionGameEngineLogic()
 
                 // applied move
             }

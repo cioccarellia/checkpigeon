@@ -16,7 +16,6 @@ import com.cioccarellia.checkpigeoncli.utils.CLIUtil
  * */
 suspend fun main(args: Array<String>) {
     CLIUtil.welcomeScreen()
-
     var iteration = 1
     while (true) {
         fun assembleCommand() = if (iteration == 1 && args.isNotEmpty()) {

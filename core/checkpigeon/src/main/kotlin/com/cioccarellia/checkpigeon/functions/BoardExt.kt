@@ -1,3 +1,5 @@
+package com.cioccarellia.checkpigeon.functions
+
 import com.cioccarellia.checkpigeon.logic.board.Board
 import com.cioccarellia.checkpigeon.logic.model.board.Coordinate
 import com.cioccarellia.checkpigeon.logic.model.material.Material
@@ -16,10 +18,10 @@ fun Board.enumPieces(targetColor: TileColor): List<Pair<Material, Coordinate>> =
 }.flatten()
 
 
-fun Board.virtualForward(validatedMove: Move): Board = copy().apply {
+fun Board.copyAndApplyMove(validatedMove: Move): Board = copy().apply {
     executeMoveForward(validatedMove)
 }
 
-fun Board.virtualBackward(validatedMove: VerboseMove): Board = copy().apply {
+fun Board.copyAndUndoMove(validatedMove: VerboseMove): Board = copy().apply {
     executeMoveBackward(validatedMove)
 }

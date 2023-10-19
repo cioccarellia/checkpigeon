@@ -3,7 +3,7 @@ package com.cioccarellia.checkpigeon.input
 import com.cioccarellia.checkpigeon.logic.model.tile.TileColor
 
 sealed class CLICommand {
-    class Move(val parsedMove: ParsedMove) : CLICommand()
+    class XMove(val parsedMove: ParsedMove) : CLICommand()
     object DrawOffer : CLICommand()
     object Resignation : CLICommand()
     object UnknownCommand : CLICommand()
@@ -20,7 +20,7 @@ object CommandParser {
             command.startsWith("move") -> {
                 val commandInput = command.removePrefix("move").removeSurrounding("(", ")")
 
-                return CLICommand.Move(
+                return CLICommand.XMove(
                     parsedMove = MoveParser.convert(commandInput, turnColor)
                 )
             }
