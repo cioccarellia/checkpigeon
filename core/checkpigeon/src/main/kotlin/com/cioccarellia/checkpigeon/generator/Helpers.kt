@@ -183,7 +183,10 @@ private fun can_attack(attacker: Material, defendant: Material): Boolean = when 
         is Material.Damone -> false
         Material.Empty -> throw IllegalArgumentException()
     }
-    Material.Empty -> throw IllegalArgumentException()
+    Material.Empty -> {
+        // TODO Warn
+        false
+    }
 }
 
 

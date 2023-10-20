@@ -1,58 +1,102 @@
 package com.cioccarellia.checkpigeon.functions
 
-import com.cioccarellia.checkpigeon.MoveGenerator
-import com.cioccarellia.checkpigeon.generator.LegalMovesGenerator
 import com.cioccarellia.checkpigeon.generator.gen_all
 import com.cioccarellia.checkpigeon.logic.board.Board
+import com.cioccarellia.checkpigeon.logic.model.material.Material
 import com.cioccarellia.checkpigeon.logic.model.move.linear.Move
 import com.cioccarellia.checkpigeon.logic.model.tile.TileColor
-import com.cioccarellia.checkpigeon.model.Status
+import com.cioccarellia.checkpigeon.model.State
 
 
-fun ToMove(status: Status): TileColor {
-    return status.playerColor
+fun Utility(state: State): Int {
+    assert(IsTerminal(state))
+
+    val winner = CalcWinner(state.board)!!
+
+    return if (winner == state.playerColor) (1) else (-1)
 }
 
 
+const val WEIGHT_LVL_1 = 1
+const val WEIGHT_LVL_2 = 10
+
+fun Evaluation(state: State): Int {
+    fun computeMaterialIncrement(color: TileColor): Int {
+        val pts =
+            state.board.countPiecesWithTypeAndColor<Material.Dama>(color) to state.board.countPiecesWithTypeAndColor<Material.Damone>(
+                color
+            )
+        return pts.first * WEIGHT_LVL_1 + pts.second * WEIGHT_LVL_2
+    }
+
+    val ownMaterialIncrement = computeMaterialIncrement(state.playerColor)
+    val enemyMaterialIncrement = computeMaterialIncrement(state.playerColor.not())
+
+    return ownMaterialIncrement - enemyMaterialIncrement
+}
+
+
+fun ToMove(state: State): TileColor {
+    return state.playerColor
+}
+
+
+fun CalcWinner(board: Board): TileColor? {
+    val whiteMaterial = board.countPieces(TileColor.WHITE);
+    if (whiteMaterial == 0) {
+        return TileColor.BLACK
+    }
+
+
+    val blackMaterial = board.countPieces(TileColor.WHITE);
+    if (blackMaterial == 0) {
+        return TileColor.WHITE
+    }
+
+
+    if (Actions(board, TileColor.WHITE).isEmpty()) {
+        // No more valid moves: stalling
+        return TileColor.BLACK
+    }
+
+    if (Actions(board, TileColor.BLACK).isEmpty()) {
+        // No more valid moves: stalling
+        return TileColor.WHITE
+    }
+
+    return null
+}
 
 
 fun IsTerminal(board: Board): Boolean {
-    val whiteMaterial = board.countPieces(TileColor.WHITE);
-    val blackMaterial = board.countPieces(TileColor.BLACK);
+    return CalcWinner(board) != null
+}
 
-    if (whiteMaterial == 0 || blackMaterial == 0) {
-        // I captured all my opponent material
-        return true
-    }
-
-    // todo check stall
-    return false;
+fun IsTerminal(state: State): Boolean {
+    return IsTerminal(state.board)
 }
 
 
-fun IsTerminal(status: Status): Boolean {
-    return IsTerminal(status.board)
-}
+fun Result(state: State, move: Move): State {
+    assert(!state.isGameOver)
 
+    val newBoard = state.board.copyAndApplyMove(move)
 
-
-
-fun Result(status: Status, move: Move): Status {
-    assert(!status.isGameOver)
-
-    val newBoard = status.board.copyAndApplyMove(move)
-
-    return Status(
+    return State(
         board = newBoard,
-        playerColor = status.playerColor.not(),
+        playerColor = state.playerColor.not(),
         isGameOver = IsTerminal(newBoard)
     )
 }
 
 
+fun Actions(board: Board, playingColor: TileColor): List<Move> {
+    return gen_all(board, playingColor)
+}
 
-fun Actions(status: Status): List<Move> {
-    return gen_all(status.board, status.playerColor)
+
+fun Actions(state: State): List<Move> {
+    return gen_all(state.board, state.playerColor)
 }
 
 

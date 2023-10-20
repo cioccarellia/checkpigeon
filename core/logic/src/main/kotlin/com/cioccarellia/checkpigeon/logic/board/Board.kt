@@ -29,7 +29,17 @@ data class Board(
             )
         }
     }
-) {
+)  {
+
+    fun deepCopy(): Board {
+        val newMatrix = Array(matrix.size) { row ->
+            Array(matrix[row].size) { col ->
+                Tile(matrix[row][col].coordinate, matrix[row][col].material) // Create a deep copy of Tile
+            }
+        }
+        return Board(newMatrix)
+    }
+
     /**
      * Board matrix, representing the game state.
      *
@@ -108,7 +118,7 @@ data class Board(
         }
 
         // Debugging
-        matrix[4][4].material = Material.Dama(TileColor.WHITE)
+        // matrix[4][4].material = Material.Dama(TileColor.WHITE)
     }
 
     val whitePieceCount: Int
@@ -122,6 +132,17 @@ data class Board(
             when (val material = tile.material) {
                 is Material.Dama -> material.color == color
                 is Material.Damone -> material.color == color
+                else -> false
+            }
+        }
+    }
+
+
+    inline fun <reified T : Material> countPiecesWithTypeAndColor(color: TileColor) = matrix.sumOf {
+        it.count { tile ->
+            when (val material = tile.material) {
+                is Material.Dama -> material.color == color && material is T
+                is Material.Damone -> material.color == color && material is T
                 else -> false
             }
         }

@@ -85,7 +85,7 @@ class Engine(
                 status.onMoveRejected(verification.rejectionReason)
 
                 // invalid move
-                System.exit(-1);
+                println("Invalid move submitted")
             }
         }
     }

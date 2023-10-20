@@ -1,5 +1,6 @@
 package com.cioccarellia.checkpigeon.generator
 
+import com.cioccarellia.checkpigeon.functions.copyAndApplyMove
 import com.cioccarellia.checkpigeon.functions.enumPieces
 import com.cioccarellia.checkpigeon.logic.board.Board
 import com.cioccarellia.checkpigeon.logic.model.board.Coordinate
@@ -64,6 +65,10 @@ fun gmovements(board: Board, coordinate: Coordinate, playingColor: TileColor): L
 fun gcaptures(board: Board, coordinate: Coordinate, playingColor: TileColor): List<Move> {
     val startingMaterial = board[coordinate]
 
+    if (startingMaterial is Material.Empty) {
+        return listOf()
+    }
+
     return rec_explore_paths(
         board = board,
         startingMaterial = startingMaterial,
@@ -104,7 +109,7 @@ fun rec_explore_paths(
             captures.add(capturedCoordinate)
 
             // generate move
-            generated += Move(
+            val generatedMove = Move(
                 moveType = MoveType.Capture,
                 playingColor = playingColor,
                 start = startingCoordinate,
@@ -113,8 +118,10 @@ fun rec_explore_paths(
                 blows = null
             )
 
+            generated += generatedMove
+
             // recursive step
-            generated += rec_explore_paths(board, startingMaterial, startingCoordinate, playingColor, endCoordinate, visitedCoordinates, captures)
+            generated += rec_explore_paths(board.copyAndApplyMove(generatedMove), startingMaterial, startingCoordinate, playingColor, endCoordinate, visitedCoordinates, captures)
 
             // remove from lists
             visitedCoordinates.remove(recursiveCoordinate)

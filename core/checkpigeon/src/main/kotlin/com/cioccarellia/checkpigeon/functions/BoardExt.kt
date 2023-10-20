@@ -18,10 +18,10 @@ fun Board.enumPieces(targetColor: TileColor): List<Pair<Material, Coordinate>> =
 }.flatten()
 
 
-fun Board.copyAndApplyMove(validatedMove: Move): Board = copy().apply {
+fun Board.copyAndApplyMove(validatedMove: Move): Board = deepCopy().apply {
     executeMoveForward(validatedMove)
 }
 
-fun Board.copyAndUndoMove(validatedMove: VerboseMove): Board = copy().apply {
+fun Board.copyAndUndoMove(validatedMove: VerboseMove): Board = deepCopy().apply {
     executeMoveBackward(validatedMove)
 }
