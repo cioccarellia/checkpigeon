@@ -15,7 +15,7 @@ fun Engine.state(): State = State(expose(), status.gameStatus.turnColor, IsTermi
 fun main() {
     val engine = Engine(
         Player("Max", TileColor.WHITE, true) to Player("Min", TileColor.BLACK, false)
-    );
+    )
 
     engine.stdoutBoard()
 
