@@ -1,5 +1,6 @@
 package com.cioccarellia.checkpigeon.search
 
+import com.cioccarellia.checkpigeon.eval.Eval
 import com.cioccarellia.checkpigeon.functions.*
 import com.cioccarellia.checkpigeon.logic.console.blue
 import com.cioccarellia.checkpigeon.logic.console.green
@@ -13,47 +14,12 @@ import kotlin.math.min
 
 
 
-
-fun dbg_tree(depth: Int, eval: Int, color: TileColor, move: Move?) {
-    fun Int.grad(): String = when {
-        this == 0 -> toString().yellow()
-        this > 0 -> ("+" + toString()).green()
-        this < 0 -> toString().red()
-        else -> toString().blue()
-    }
-
-
-    repeat(depth) {
-        print("      ")
-    }
-
-    val out = buildString {
-        append("[$depth]")
-        append("[${color.toStringShort()}] ")
-        append(eval.grad())
-        append(" ${move?.humanMoveNotation()}")
-    }
-
-    println(out)
-    System.out.flush()
-}
-
-
 fun MaxValue(state: State, depth: Int, _alpha: Int, _beta: Int): Pair<Int, Move?> {
     var alpha = _alpha
 
-    // if (IsTerminal(state)) {
-    //     return Utility(state) to null
-    // }
-    if (SearchParameters.USE_EVAL) {
         if (depth <= 0 || IsTerminal(state)) {
             return Evaluation(state) to null
         }
-    } else {
-        if (IsTerminal(state)) {
-            return Utility(state) to null
-        }
-    }
 
 
     var v1 = SearchParameters.MIN
@@ -91,18 +57,9 @@ fun MaxValue(state: State, depth: Int, _alpha: Int, _beta: Int): Pair<Int, Move?
 fun MinValue(state: State, depth: Int, _alpha: Int, _beta: Int): Pair<Int, Move?> {
     var beta = _beta
 
-    //if (IsTerminal(state)) {
-    //    return Utility(state) to null
-    //}
-    if (SearchParameters.USE_EVAL) {
         if (depth <= 0 || IsTerminal(state)) {
             return Evaluation(state) to null
         }
-    } else {
-        if (IsTerminal(state)) {
-            return Utility(state) to null
-        }
-    }
 
     var v1 = SearchParameters.MAX
     var move: Move? = null
@@ -138,20 +95,21 @@ fun MinValue(state: State, depth: Int, _alpha: Int, _beta: Int): Pair<Int, Move?
 
 
 fun MiniMaxAlphaBeta(state: State): Move? {
-    if (SearchParameters.Debug.DEBUG_ALL) {
-        println()
-        println("BGN_DBG_MINIMAX")
-        println()
-    }
-
     val player = ToMove(state)
     val (utility, move) = MaxValue(state, SearchParameters.MAX_DEPTH, SearchParameters.MIN, SearchParameters.MAX)
 
     if (SearchParameters.Debug.DEBUG_ALL || SearchParameters.Debug.DEBUG_EVAL) {
+        println()
+        println()
+        println()
+        println()
+        println()
+        println()
         dbg_tree(0, utility, player, move)
-        println()
+
+        Eval((state), debug = true, "previousEval")
+        Eval((Result(state, move!!)), debug = true, "currentEval")
         println("END_DBG_MINIMAX")
-        println()
     }
 
     return move

@@ -1,5 +1,8 @@
 package com.cioccarellia.checkpigeon.functions
 
+import com.cioccarellia.checkpigeon.eval.Eval
+import com.cioccarellia.checkpigeon.eval.m1_eval
+import com.cioccarellia.checkpigeon.eval.m2_eval
 import com.cioccarellia.checkpigeon.generator.gen_all
 import com.cioccarellia.checkpigeon.logic.board.Board
 import com.cioccarellia.checkpigeon.logic.model.material.Material
@@ -16,45 +19,7 @@ fun Utility(state: State): Int {
     return if (winner == state.playerColor) (1) else (-1)
 }
 
-
-const val WEIGHT_LVL_1 = 1
-const val WEIGHT_LVL_2 = 10
-
-fun Evaluation(state: State): Int {
-    fun computeMaterialIncrement(color: TileColor): Int {
-        val pts =
-            state.board.countPiecesWithTypeAndColor<Material.Dama>(color) to state.board.countPiecesWithTypeAndColor<Material.Damone>(
-                color
-            )
-
-        return pts.first * WEIGHT_LVL_1 + pts.second * WEIGHT_LVL_2
-    }
-
-    fun computeMaterialWeight(color: TileColor): Int {
-        var accumulator = 0
-
-        state.board.enumPieces(color).forEach {
-            accumulator += when (it.first) {
-                is Material.Dama -> m1_eval(it.second, color)
-                is Material.Damone -> m2_eval(it.second, color)
-                Material.Empty -> 0
-            }
-        }
-
-        return accumulator
-    }
-
-
-    val ownMaterialIncrement = computeMaterialIncrement(state.playerColor)
-    val enemyMaterialIncrement = computeMaterialIncrement(state.playerColor.not())
-
-    val ownPositionIncrement = computeMaterialWeight(state.playerColor)
-    val enemyPositionIncrement = computeMaterialWeight(state.playerColor.not())
-
-
-    return ownMaterialIncrement - enemyMaterialIncrement + ownPositionIncrement - enemyPositionIncrement
-}
-
+fun Evaluation(state: State): Int = Eval(state)
 
 fun ToMove(state: State): TileColor {
     return state.playerColor
