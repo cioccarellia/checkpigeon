@@ -109,12 +109,6 @@ enum class Direction {
     }
 
 
-    fun sym_reversed() = when (this) {
-        FL -> BR
-        BR -> FL
-        FR -> BL
-        BL -> FR
-    }
 
     companion object {
         fun full(): Set<Direction> = setOf(FL, FR, BL, BR)
@@ -167,7 +161,7 @@ fun Material.validDirections(playingColor: TileColor): Set<Direction>? = when (t
 
 fun isMovementLegal(board: Board, playingColor: TileColor, coordinate: Coordinate, direction: Direction): Boolean {
     // first we get the new coordinate, and check whether it's out of bounds
-    val shiftedCoordinate: Coordinate? = coordinate.apply(direction, playingColor)
+    val shiftedCoordinate: Coordinate? = coordinate.apply(direction, playingColor, amount = 1)
 
     return if (shiftedCoordinate == null) {
         // out of bounds
@@ -179,4 +173,60 @@ fun isMovementLegal(board: Board, playingColor: TileColor, coordinate: Coordinat
         }
     }
 }
+
+
+
+private fun can_attack(attacker: Material, defendant: Material): Boolean = when (attacker) {
+    is Material.Dama -> true
+    is Material.Damone -> when (defendant) {
+        is Material.Dama -> true
+        is Material.Damone -> false
+        Material.Empty -> throw IllegalArgumentException()
+    }
+    Material.Empty -> throw IllegalArgumentException()
+}
+
+
+fun canCaptureAndJumpOver(board: Board, playingColor: TileColor, startCoordinate: Coordinate, direction: Direction): Boolean {
+    // first we get the new coordinate, and check whether it's out of bounds
+    val shiftedCoordinateOnce: Coordinate? = startCoordinate.apply(direction, playingColor, amount = 1)     // defendant
+    val shiftedCoordinateTwice: Coordinate? = startCoordinate.apply(direction, playingColor, amount = 2)    // landing zone
+
+    return if (shiftedCoordinateOnce == null || shiftedCoordinateTwice == null) {
+        // either is out of bounds
+        false;
+    } else {
+        val material = board[startCoordinate]               // starting material
+        val defendant = board[shiftedCoordinateOnce]        // defending material (should be weaker or equal)
+        val landing = board[shiftedCoordinateTwice]         // landing zone material (should be empty)
+
+
+        if (material.color() != null) {
+            assert(playingColor == material.color())
+        }
+
+        if (landing !is Material.Empty) {
+            // trying to land on something
+            return false
+        }
+
+        if (defendant is Material.Empty) {
+            // trying to capture nothing
+            return false
+        }
+
+        if (defendant.color() != null && defendant.color() == playingColor) {
+            // trying to capture your own piece
+            return false
+        }
+
+        if (!can_attack(material, defendant)) {
+            // trying to attack a stronger enemy
+            return false
+        }
+
+        return true
+    }
+}
+
 

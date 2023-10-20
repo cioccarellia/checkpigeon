@@ -1,7 +1,6 @@
 package com.cioccarellia.checkpigeon
 
 import com.cioccarellia.checkpigeon.generator.gen_all
-import com.cioccarellia.checkpigeon.generator.gen_for
 import com.cioccarellia.checkpigeon.logic.engine.Engine
 import com.cioccarellia.checkpigeon.logic.engine.internal.BoardPrinter
 import com.cioccarellia.checkpigeon.logic.model.board.Coordinate
@@ -24,7 +23,7 @@ class MatrixTests {
 
         BoardPrinter.stdoutc(engine.expose(), TileColor.WHITE, listOf(coord))
 
-        val list = gen_all(board, TileColor.WHITE)
+        val list = gen_all(board, TileColor.BLACK)
         println(list.joinToString(separator = "\n"))
 
     }
