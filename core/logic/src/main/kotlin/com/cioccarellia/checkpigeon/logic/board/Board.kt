@@ -28,7 +28,8 @@ data class Board(
                 Coordinate(file, slidingRank), Material.Empty
             )
         }
-    }
+    },
+    val applyInit: Boolean = true
 )  {
 
     fun deepCopy(): Board {
@@ -37,7 +38,7 @@ data class Board(
                 Tile(matrix[row][col].coordinate, matrix[row][col].material) // Create a deep copy of Tile
             }
         }
-        return Board(newMatrix)
+        return Board(newMatrix, applyInit = false)
     }
 
     /**

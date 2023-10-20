@@ -7,7 +7,8 @@ import com.cioccarellia.checkpigeoncli.commands.ParsedCommand
 import com.cioccarellia.checkpigeoncli.commands.readCommand
 import com.cioccarellia.checkpigeoncli.commands.readCommandFromArgs
 import com.cioccarellia.checkpigeoncli.executors.export.CliExportExecutor
-import com.cioccarellia.checkpigeoncli.executors.game.hh.CliHHGameExecutor
+import com.cioccarellia.checkpigeoncli.executors.game.CliHEGameExecutor
+import com.cioccarellia.checkpigeoncli.executors.game.CliHHGameExecutor
 import com.cioccarellia.checkpigeoncli.executors.import.CliImportExecutor
 import com.cioccarellia.checkpigeoncli.utils.CLIUtil
 
@@ -17,6 +18,7 @@ import com.cioccarellia.checkpigeoncli.utils.CLIUtil
 suspend fun main(args: Array<String>) {
     CLIUtil.welcomeScreen()
     var iteration = 1
+
     while (true) {
         fun assembleCommand() = if (iteration == 1 && args.isNotEmpty()) {
             readCommandFromArgs("ready", args)
@@ -41,7 +43,7 @@ fun onParseFailure(message: String) {
     println("Could not parse command: $message")
 }
 
-suspend fun onSuccessfulCommandParse(command: Command) {
+fun onSuccessfulCommandParse(command: Command) {
     when (command) {
         Exit -> {
 
@@ -52,7 +54,7 @@ suspend fun onSuccessfulCommandParse(command: Command) {
         is ExportGame -> CliExportExecutor(command).execute()
         is ImportGame -> CliImportExecutor(command).execute()
         is GameHumanVsHuman -> CliHHGameExecutor(command).execute()
-        is GameHumanVsEngine -> TODO()
+        is GameHumanVsEngine -> CliHEGameExecutor(command).execute()
         is GameEngineVsEngine -> TODO()
     }
 }

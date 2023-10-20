@@ -1,4 +1,4 @@
-package com.cioccarellia.checkpigeoncli.executors.game.hh
+package com.cioccarellia.checkpigeoncli.executors.game
 
 import com.cioccarellia.checkpigeon.ext.findPlayerWithColor
 import com.cioccarellia.checkpigeon.input.CLICommand

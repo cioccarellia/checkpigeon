@@ -12,4 +12,11 @@ enum class TileColor {
         WHITE -> BLACK
         BLACK -> WHITE
     }
+
+
+
+    fun toStringShort(): String = when (this) {
+        WHITE -> "W"
+        BLACK -> "B"
+    }
 }

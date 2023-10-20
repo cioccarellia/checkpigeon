@@ -23,7 +23,7 @@ fun main() {
     while (engine.status.gameStatus.isAlive) {
         val state = engine.state()
 
-        if (cycle == 23) {
+        if (cycle == 10) {
             println("here")
         }
 

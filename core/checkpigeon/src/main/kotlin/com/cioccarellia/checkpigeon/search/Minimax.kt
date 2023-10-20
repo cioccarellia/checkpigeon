@@ -1,21 +1,42 @@
 package com.cioccarellia.checkpigeon.search
 
 import com.cioccarellia.checkpigeon.functions.*
+import com.cioccarellia.checkpigeon.logic.console.blue
+import com.cioccarellia.checkpigeon.logic.console.green
+import com.cioccarellia.checkpigeon.logic.console.red
+import com.cioccarellia.checkpigeon.logic.console.yellow
 import com.cioccarellia.checkpigeon.logic.model.move.linear.Move
+import com.cioccarellia.checkpigeon.logic.model.tile.TileColor
 import com.cioccarellia.checkpigeon.model.State
 import kotlin.math.max
 import kotlin.math.min
 
 
-const val USE_EVAL = true
-
-const val MAX = +1_000_000
-const val MIN = -1_000_000
-
-const val MAX_DEPTH = 2
-const val RANDOMIZED = true
 
 
+fun dbg_tree(depth: Int, eval: Int, color: TileColor, move: Move?) {
+    fun Int.grad(): String = when {
+        this == 0 -> toString().yellow()
+        this > 0 -> ("+" + toString()).green()
+        this < 0 -> toString().red()
+        else -> toString().blue()
+    }
+
+
+    repeat(depth) {
+        print("      ")
+    }
+
+    val out = buildString {
+        append("[$depth]")
+        append("[${color.toStringShort()}] ")
+        append(eval.grad())
+        append(" ${move?.humanMoveNotation()}")
+    }
+
+    println(out)
+    System.out.flush()
+}
 
 
 fun MaxValue(state: State, depth: Int, _alpha: Int, _beta: Int): Pair<Int, Move?> {
@@ -24,7 +45,7 @@ fun MaxValue(state: State, depth: Int, _alpha: Int, _beta: Int): Pair<Int, Move?
     // if (IsTerminal(state)) {
     //     return Utility(state) to null
     // }
-    if (USE_EVAL) {
+    if (SearchParameters.USE_EVAL) {
         if (depth <= 0 || IsTerminal(state)) {
             return Evaluation(state) to null
         }
@@ -35,15 +56,15 @@ fun MaxValue(state: State, depth: Int, _alpha: Int, _beta: Int): Pair<Int, Move?
     }
 
 
-
-    var v1 = MIN
+    var v1 = SearchParameters.MIN
     var move: Move? = null
 
-    val actions = Actions(state).apply {
-        if (RANDOMIZED) {
-            this.shuffled()
-        }
+    var actions = Actions(state)
+
+    if (SearchParameters.RANDOMIZED) {
+        actions = actions.shuffled(SearchParameters.seed())
     }
+
     for (a in actions) {
         val (v2, a2) = MinValue(Result(state, a), depth - 1, alpha, _beta)
 
@@ -59,6 +80,10 @@ fun MaxValue(state: State, depth: Int, _alpha: Int, _beta: Int): Pair<Int, Move?
         }
     }
 
+    if (SearchParameters.Debug.DEBUG_ALL) {
+        dbg_tree(depth, v1, state.playerColor, move)
+    }
+
     return v1 to move
 }
 
@@ -69,7 +94,7 @@ fun MinValue(state: State, depth: Int, _alpha: Int, _beta: Int): Pair<Int, Move?
     //if (IsTerminal(state)) {
     //    return Utility(state) to null
     //}
-    if (USE_EVAL) {
+    if (SearchParameters.USE_EVAL) {
         if (depth <= 0 || IsTerminal(state)) {
             return Evaluation(state) to null
         }
@@ -79,13 +104,13 @@ fun MinValue(state: State, depth: Int, _alpha: Int, _beta: Int): Pair<Int, Move?
         }
     }
 
-    var v1 = MAX
+    var v1 = SearchParameters.MAX
     var move: Move? = null
 
-    val actions = Actions(state).apply {
-        if (RANDOMIZED) {
-            this.shuffled()
-        }
+    var actions = Actions(state)
+
+    if (SearchParameters.RANDOMIZED) {
+        actions = actions.shuffled(SearchParameters.seed())
     }
 
     for (a in actions) {
@@ -103,14 +128,31 @@ fun MinValue(state: State, depth: Int, _alpha: Int, _beta: Int): Pair<Int, Move?
         }
     }
 
+
+    if (SearchParameters.Debug.DEBUG_ALL) {
+        dbg_tree(depth, v1, state.playerColor, move)
+    }
+
     return v1 to move
 }
 
 
-
 fun MiniMaxAlphaBeta(state: State): Move? {
+    if (SearchParameters.Debug.DEBUG_ALL) {
+        println()
+        println("BGN_DBG_MINIMAX")
+        println()
+    }
+
     val player = ToMove(state)
-    val (utility, move) = MaxValue(state, MAX_DEPTH, MIN, MAX)
+    val (utility, move) = MaxValue(state, SearchParameters.MAX_DEPTH, SearchParameters.MIN, SearchParameters.MAX)
+
+    if (SearchParameters.Debug.DEBUG_ALL || SearchParameters.Debug.DEBUG_EVAL) {
+        dbg_tree(0, utility, player, move)
+        println()
+        println("END_DBG_MINIMAX")
+        println()
+    }
 
     return move
 }

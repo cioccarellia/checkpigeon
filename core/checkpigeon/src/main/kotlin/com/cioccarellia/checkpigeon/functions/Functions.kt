@@ -26,13 +26,33 @@ fun Evaluation(state: State): Int {
             state.board.countPiecesWithTypeAndColor<Material.Dama>(color) to state.board.countPiecesWithTypeAndColor<Material.Damone>(
                 color
             )
+
         return pts.first * WEIGHT_LVL_1 + pts.second * WEIGHT_LVL_2
     }
+
+    fun computeMaterialWeight(color: TileColor): Int {
+        var accumulator = 0
+
+        state.board.enumPieces(color).forEach {
+            accumulator += when (it.first) {
+                is Material.Dama -> m1_eval(it.second, color)
+                is Material.Damone -> m2_eval(it.second, color)
+                Material.Empty -> 0
+            }
+        }
+
+        return accumulator
+    }
+
 
     val ownMaterialIncrement = computeMaterialIncrement(state.playerColor)
     val enemyMaterialIncrement = computeMaterialIncrement(state.playerColor.not())
 
-    return ownMaterialIncrement - enemyMaterialIncrement
+    val ownPositionIncrement = computeMaterialWeight(state.playerColor)
+    val enemyPositionIncrement = computeMaterialWeight(state.playerColor.not())
+
+
+    return ownMaterialIncrement - enemyMaterialIncrement + ownPositionIncrement - enemyPositionIncrement
 }
 
 
