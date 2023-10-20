@@ -104,10 +104,6 @@ fun rec_explore_paths(
 
     val directions = startingMaterial.validDirections(playingColor)!!
 
-    if (recursiveCoordinate == Coordinate(File.Companion.from('c'), Rank(7))) {
-        println("here".red())
-    }
-
     // get all viable directions
     for (direction in directions) {
         val capturedCoordinate = recursiveCoordinate.apply(direction, playingColor, amount = 1)

@@ -178,12 +178,12 @@ fun isMovementLegal(board: Board, playingColor: TileColor, coordinate: Coordinat
 
 
 private fun can_attack(attacker: Material, defendant: Material): Boolean = when (attacker) {
-    is Material.Dama -> true
-    is Material.Damone -> when (defendant) {
+    is Material.Dama -> when (defendant) {
         is Material.Dama -> true
         is Material.Damone -> false
         Material.Empty -> throw IllegalArgumentException()
     }
+    is Material.Damone -> true
     Material.Empty -> {
         // TODO Warn
         // println("warn: space tries to move".yellow())
