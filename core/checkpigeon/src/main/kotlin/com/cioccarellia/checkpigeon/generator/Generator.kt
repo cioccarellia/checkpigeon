@@ -3,7 +3,11 @@ package com.cioccarellia.checkpigeon.generator
 import com.cioccarellia.checkpigeon.functions.copyAndApplyMove
 import com.cioccarellia.checkpigeon.functions.enumPieces
 import com.cioccarellia.checkpigeon.logic.board.Board
+import com.cioccarellia.checkpigeon.logic.console.red
+import com.cioccarellia.checkpigeon.logic.console.yellow
 import com.cioccarellia.checkpigeon.logic.model.board.Coordinate
+import com.cioccarellia.checkpigeon.logic.model.board.File
+import com.cioccarellia.checkpigeon.logic.model.board.Rank
 import com.cioccarellia.checkpigeon.logic.model.material.Material
 import com.cioccarellia.checkpigeon.logic.model.move.MoveType
 import com.cioccarellia.checkpigeon.logic.model.move.linear.Move
@@ -23,6 +27,11 @@ fun gen_all(board: Board, playingColor: TileColor): List<Move> {
 
 
 fun gen_for(board: Board, coordinate: Coordinate, playingColor: TileColor): List<Move> {
+    if (board[coordinate] == Material.Empty) {
+        println("warn: space tries to eval moves".yellow())
+    }
+
+
     return gmovements(board, coordinate, playingColor) + gcaptures(board, coordinate, playingColor)
 }
 
@@ -71,7 +80,7 @@ fun gcaptures(board: Board, coordinate: Coordinate, playingColor: TileColor): Li
     }
 
     return rec_explore_paths(
-        board = board,
+        board = board.deepCopy(),
         startingMaterial = startingMaterial,
         startingCoordinate = coordinate,
         playingColor = playingColor,
@@ -94,6 +103,10 @@ fun rec_explore_paths(
     val generated: MutableList<Move> = mutableListOf()
 
     val directions = startingMaterial.validDirections(playingColor)!!
+
+    if (recursiveCoordinate == Coordinate(File.Companion.from('c'), Rank(7))) {
+        println("here".red())
+    }
 
     // get all viable directions
     for (direction in directions) {

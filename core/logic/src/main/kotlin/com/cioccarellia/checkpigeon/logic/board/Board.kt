@@ -1,5 +1,6 @@
 package com.cioccarellia.checkpigeon.logic.board
 
+import com.cioccarellia.checkpigeon.logic.engine.internal.BoardPrinter
 import com.cioccarellia.checkpigeon.logic.model.board.Coordinate
 import com.cioccarellia.checkpigeon.logic.model.board.File
 import com.cioccarellia.checkpigeon.logic.model.board.Rank
@@ -98,20 +99,23 @@ data class Board(
 
 
     init {
-        // Populates board
-        matrix.forEach { file ->
-            // File 1 [ranks 1 to 8]
+        if (applyInit) {
+            // Populates board
+            matrix.forEach { file ->
+                // File 1 [ranks 1 to 8]
 
-            file.forEachIndexed { i, it ->
-                when {
-                    i >= 5 -> {
-                        if (it.color == TileColor.BLACK) {
-                            it.material = Material.Dama(TileColor.BLACK)
+                file.forEachIndexed { i, it ->
+                    when {
+                        i >= 5 -> {
+                            if (it.color == TileColor.BLACK) {
+                                it.material = Material.Dama(TileColor.BLACK)
+                            }
                         }
-                    }
-                    i <= 2 -> {
-                        if (it.color == TileColor.BLACK) {
-                            it.material = Material.Dama(TileColor.WHITE)
+
+                        i <= 2 -> {
+                            if (it.color == TileColor.BLACK) {
+                                it.material = Material.Dama(TileColor.WHITE)
+                            }
                         }
                     }
                 }
@@ -202,7 +206,7 @@ data class Board(
 
     private fun tile(coord: Coordinate): Tile = matrix[coord.file.letter.numeric - 1][coord.rank.number - 1]
 
-    internal fun set(coord: Coordinate, material: Material) {
+    operator fun set(coord: Coordinate, material: Material) {
         matrix[coord.file.letter.numeric - 1][coord.rank.number - 1].material = material
     }
 
@@ -224,6 +228,10 @@ data class Board(
         if (!matrix.contentDeepEquals(other.matrix)) return false
 
         return true
+    }
+
+    fun print(color: TileColor, highlights: List<Coordinate> = listOf()) {
+        BoardPrinter.stdoutc(this, color, highlights)
     }
 
     override fun hashCode(): Int {

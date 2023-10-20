@@ -2,6 +2,7 @@ package com.cioccarellia.checkpigeon.generator
 
 import com.cioccarellia.checkpigeon.logic.board.Board
 import com.cioccarellia.checkpigeon.logic.board.CardinalDirection
+import com.cioccarellia.checkpigeon.logic.console.yellow
 import com.cioccarellia.checkpigeon.logic.model.board.Coordinate
 import com.cioccarellia.checkpigeon.logic.model.material.Material
 import com.cioccarellia.checkpigeon.logic.model.tile.TileColor
@@ -185,6 +186,7 @@ private fun can_attack(attacker: Material, defendant: Material): Boolean = when 
     }
     Material.Empty -> {
         // TODO Warn
+        // println("warn: space tries to move".yellow())
         false
     }
 }
@@ -206,6 +208,16 @@ fun canCaptureAndJumpOver(board: Board, playingColor: TileColor, startCoordinate
 
         if (material.color() != null) {
             assert(playingColor == material.color())
+        }
+
+        if (material is Material.Empty) {
+            // println("warn: space tries to move! Capture with [$material] from ${startCoordinate}x${shiftedCoordinateOnce}, capturing [$defendant] and landing on $shiftedCoordinateTwice, which contains $landing".yellow())
+            // println("------------------------------------- printing incriminated board".yellow())
+            // board.print(playingColor, listOf(startCoordinate))
+            // println("------------------------------------- printed board".yellow())
+
+
+            return false
         }
 
         if (landing !is Material.Empty) {

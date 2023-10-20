@@ -24,6 +24,10 @@ fun main() {
     while (engine.status.gameStatus.isAlive) {
         val state = engine.state()
 
+        if (cycle == 27) {
+            println()
+        }
+
         val move = MiniMaxAlphaBeta(state)
 
         if (move == null) {
