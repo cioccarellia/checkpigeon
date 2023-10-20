@@ -9,10 +9,12 @@ import kotlin.math.min
 
 const val USE_EVAL = true
 
-val F: (State) -> Int = if (USE_EVAL) ::Evaluation else ::Utility
-
 const val MAX = +1_000_000
 const val MIN = -1_000_000
+
+const val MAX_DEPTH = 2
+const val RANDOMIZED = true
+
 
 
 
@@ -22,15 +24,26 @@ fun MaxValue(state: State, depth: Int, _alpha: Int, _beta: Int): Pair<Int, Move?
     // if (IsTerminal(state)) {
     //     return Utility(state) to null
     // }
-    if (depth <= 0 || IsTerminal(state)) {
-        return F(state) to null
+    if (USE_EVAL) {
+        if (depth <= 0 || IsTerminal(state)) {
+            return Evaluation(state) to null
+        }
+    } else {
+        if (IsTerminal(state)) {
+            return Utility(state) to null
+        }
     }
+
 
 
     var v1 = MIN
     var move: Move? = null
 
-    val actions = Actions(state)
+    val actions = Actions(state).apply {
+        if (RANDOMIZED) {
+            this.shuffled()
+        }
+    }
     for (a in actions) {
         val (v2, a2) = MinValue(Result(state, a), depth - 1, alpha, _beta)
 
@@ -56,14 +69,25 @@ fun MinValue(state: State, depth: Int, _alpha: Int, _beta: Int): Pair<Int, Move?
     //if (IsTerminal(state)) {
     //    return Utility(state) to null
     //}
-    if (depth <= 0 || IsTerminal(state)) {
-        return F(state) to null
+    if (USE_EVAL) {
+        if (depth <= 0 || IsTerminal(state)) {
+            return Evaluation(state) to null
+        }
+    } else {
+        if (IsTerminal(state)) {
+            return Utility(state) to null
+        }
     }
 
     var v1 = MAX
     var move: Move? = null
 
-    val actions = Actions(state)
+    val actions = Actions(state).apply {
+        if (RANDOMIZED) {
+            this.shuffled()
+        }
+    }
+
     for (a in actions) {
         val (v2, a2) = MaxValue(Result(state, a), depth - 1, _alpha, beta)
 
@@ -83,7 +107,6 @@ fun MinValue(state: State, depth: Int, _alpha: Int, _beta: Int): Pair<Int, Move?
 }
 
 
-const val MAX_DEPTH = 6
 
 fun MiniMaxAlphaBeta(state: State): Move? {
     val player = ToMove(state)

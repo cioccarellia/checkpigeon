@@ -8,6 +8,7 @@ import com.cioccarellia.checkpigeon.logic.model.material.Material
 import com.cioccarellia.checkpigeon.logic.model.move.MoveType
 import com.cioccarellia.checkpigeon.logic.model.move.linear.Move
 import com.cioccarellia.checkpigeon.logic.model.tile.TileColor
+import java.util.LinkedList
 
 
 fun gen_all(board: Board, playingColor: TileColor): List<Move> {
@@ -114,7 +115,7 @@ fun rec_explore_paths(
                 playingColor = playingColor,
                 start = startingCoordinate,
                 end = endCoordinate,
-                captures = captures,
+                captures = LinkedList(captures),
                 blows = null
             )
 

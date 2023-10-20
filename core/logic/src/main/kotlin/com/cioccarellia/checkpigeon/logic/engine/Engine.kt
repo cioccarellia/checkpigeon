@@ -70,8 +70,8 @@ class Engine(
         }
     }
 
-    fun applyMove(move: Move) {
-        when (val verification = MoveVerifier.verifyMove(move, board, status.gameStatus)) {
+    fun applyMove(move: Move): VerificationResult {
+        return when (val verification = MoveVerifier.verifyMove(move, board, status.gameStatus)) {
             is VerificationResult.Passed -> {
                 status.onMoveAccepted(verification.move, board)
                 board.executeMoveForward(verification.move)
@@ -79,6 +79,7 @@ class Engine(
                 afterMoveSubmissionGameEngineLogic()
 
                 // applied move
+                verification
             }
 
             is VerificationResult.Failed -> {
@@ -86,6 +87,7 @@ class Engine(
 
                 // invalid move
                 println("Invalid move submitted")
+                verification
             }
         }
     }

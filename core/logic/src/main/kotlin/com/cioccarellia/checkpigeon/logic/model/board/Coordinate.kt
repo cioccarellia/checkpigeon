@@ -62,4 +62,8 @@ data class Coordinate(
         )
     }
 
+
+    override fun toString(): String {
+        return file.letter.toString() + rank.number.toString()
+    }
 }

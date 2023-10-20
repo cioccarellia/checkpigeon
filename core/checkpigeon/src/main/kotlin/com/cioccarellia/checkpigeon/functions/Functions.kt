@@ -68,12 +68,13 @@ fun CalcWinner(board: Board): TileColor? {
 }
 
 
-fun IsTerminal(board: Board): Boolean {
-    return CalcWinner(board) != null
+fun IsTerminal(board: Board, playingColor: TileColor): Boolean {
+    val winner = CalcWinner(board)
+    return winner != null && winner != playingColor
 }
 
 fun IsTerminal(state: State): Boolean {
-    return IsTerminal(state.board)
+    return IsTerminal(state.board, state.playerColor)
 }
 
 
@@ -85,7 +86,7 @@ fun Result(state: State, move: Move): State {
     return State(
         board = newBoard,
         playerColor = state.playerColor.not(),
-        isGameOver = IsTerminal(newBoard)
+        isGameOver = IsTerminal(newBoard, state.playerColor.not())
     )
 }
 
