@@ -2,6 +2,7 @@ package com.cioccarellia.checkpigeon
 
 import com.cioccarellia.checkpigeon.functions.IsTerminal
 import com.cioccarellia.checkpigeon.logic.console.red
+import com.cioccarellia.checkpigeon.logic.console.yellow
 import com.cioccarellia.checkpigeon.logic.engine.Engine
 import com.cioccarellia.checkpigeon.logic.engine.verifier.VerificationResult
 import com.cioccarellia.checkpigeon.logic.model.player.Player
@@ -26,7 +27,7 @@ fun main() {
         val move = MiniMaxAlphaBeta(state)
 
         if (move == null) {
-            println("no move found")
+            println("No move found")
             break
         }
 
@@ -42,7 +43,7 @@ fun main() {
             is VerificationResult.Failed -> {
                 println("Move rejected by engine".red())
                 println("move_str=$move".red())
-                println("move_numan=${move.humanMoveNotation()}".red())
+                println("move_human=${move.humanMoveNotation()}".red())
                 println()
                 println()
                 println()
@@ -53,7 +54,10 @@ fun main() {
             }
         }
 
-        cycle++
+        if (++cycle > 300) {
+            println("Reached 300 runs, game over".yellow())
+            break
+        }
     }
 
 }

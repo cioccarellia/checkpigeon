@@ -8,8 +8,8 @@ import com.cioccarellia.checkpigeon.model.State
 import com.cioccarellia.checkpigeon.search.grad
 
 
-const val WEIGHT_LVL_1 = 20
-const val WEIGHT_LVL_2 = 100
+const val WEIGHT_LVL_1 = 30
+const val WEIGHT_LVL_2 = 60
 
 
 fun computeMaterialIncrement(board: Board, color: TileColor): Int {

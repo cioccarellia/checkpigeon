@@ -5,13 +5,13 @@ import com.cioccarellia.checkpigeon.logic.model.tile.TileColor
 
 
 val matrix_1_white: Array<IntArray> = arrayOf(
-    intArrayOf( 10,  10,  10,  10,  10,  10,  10,  10),
-    intArrayOf(  8,   7,   7,   7,   7,   7,   7,   8),
-    intArrayOf(  6,   5,   5,   5,   5,   5,   5,   6),
-    intArrayOf(  5,   4,   4,   4,   4,   4,   4,   5),
-    intArrayOf(  4,   3,   3,   3,   3,   3,   3,   4),
-    intArrayOf(  2,   2,   2,   2,   2,   2,   2,   1),
-    intArrayOf(  1,   1,   1,   1,   1,   1,   1,   1),
+    intArrayOf( 50,  50,  50,  50,  50,  50,  50,  50),
+    intArrayOf( 35,  30,  30,  30,  30,  30,  30,  35),
+    intArrayOf( 25,  20,  20,  20,  20,  20,  20,  25),
+    intArrayOf( 15,  10,  10,  15,  15,  10,  10,  15),
+    intArrayOf( 10,   5,   5,  10,  10,   5,   5,  10),
+    intArrayOf(  4,   4,   4,   4,   4,   4,   4,   4),
+    intArrayOf(  2,   2,   2,   2,   2,   2,   2,   2),
     intArrayOf(  0,   0,   0,   0,   0,   0,   0,   0),
 )
 
