@@ -1,5 +1,5 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="LauncherKt" type="JetRunConfigurationType" nameIsGenerated="true">
+  <configuration default="false" name="LauncherKt" type="JetRunConfigurationType" singleton="false" nameIsGenerated="true">
     <option name="MAIN_CLASS_NAME" value="com.cioccarellia.checkpigeon.LauncherKt" />
     <module name="checkpigeon.core.checkpigeon.main" />
     <shortenClasspath name="NONE" />

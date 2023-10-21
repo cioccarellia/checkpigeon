@@ -1,10 +1,12 @@
 package com.cioccarellia.checkpigeon
 
 import com.cioccarellia.checkpigeon.functions.IsTerminal
+import com.cioccarellia.checkpigeon.logic.console.green
 import com.cioccarellia.checkpigeon.logic.console.red
 import com.cioccarellia.checkpigeon.logic.console.yellow
 import com.cioccarellia.checkpigeon.logic.engine.Engine
 import com.cioccarellia.checkpigeon.logic.engine.verifier.VerificationResult
+import com.cioccarellia.checkpigeon.logic.model.move.MoveType
 import com.cioccarellia.checkpigeon.logic.model.player.Player
 import com.cioccarellia.checkpigeon.logic.model.tile.TileColor
 import com.cioccarellia.checkpigeon.model.State
@@ -20,6 +22,9 @@ fun main() {
     engine.stdoutBoard()
 
 
+    var movements = 0;
+    var captures = 0;
+
     var cycle = 1
     while (engine.status.gameStatus.isAlive) {
         val state = engine.state()
@@ -27,7 +32,7 @@ fun main() {
         val move = MiniMaxAlphaBeta(state)
 
         if (move == null) {
-            println("No move found")
+            println("No move found, game over")
             break
         }
 
@@ -37,6 +42,11 @@ fun main() {
         when (engine.applyMove(move)) {
             is VerificationResult.Passed -> {
                 engine.stdoutBoardCoords(TileColor.WHITE, listOf(move.end))
+
+                when (move.moveType) {
+                    MoveType.Capture -> captures++
+                    MoveType.Movement -> movements++
+                }
                 println()
             }
 
@@ -59,5 +69,7 @@ fun main() {
             break
         }
     }
+
+    println("Movements: $movements\nCaptures: $captures".green())
 
 }

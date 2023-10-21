@@ -10,6 +10,10 @@ import com.cioccarellia.checkpigeon.logic.model.move.linear.Move
 import com.cioccarellia.checkpigeon.logic.model.move.verbose.VerboseMove
 import com.cioccarellia.checkpigeon.logic.model.tile.Tile
 import com.cioccarellia.checkpigeon.logic.model.tile.TileColor
+import org.apache.commons.codec.digest.MurmurHash2
+import java.security.MessageDigest
+import java.security.NoSuchAlgorithmException
+
 
 data class Board(
     val matrix: Array<Array<Tile>> = Array(8) { fileIndex ->
@@ -232,6 +236,39 @@ data class Board(
 
     fun print(color: TileColor, highlights: List<Coordinate> = listOf()) {
         BoardPrinter.stdoutc(this, color, highlights)
+    }
+
+    //Version 2
+    fun getHash2(s: String): String {
+        try {
+
+            // Create MD5 Hash
+            val digest = MessageDigest.getInstance("MD5")
+            digest.update(s.toByteArray())
+            val messageDigest = digest.digest()
+
+            // Create Hex String
+            val hexString = StringBuffer()
+            for (i in messageDigest.indices) {
+                hexString.append(((messageDigest[i].toInt() and 0xff) + 0x100).toString(16).substring(1))
+            }
+            return hexString.toString()
+        } catch (e: NoSuchAlgorithmException) {
+            e.printStackTrace()
+        }
+        return ""
+    }
+
+
+    fun hash(): Int {
+        val str = buildString {
+            for (i in 0..7) {
+                for (j in 0..7) {
+                    append(matrix[i][j].coordinate.toString() + matrix[i][j].material.toString())
+                }
+            }
+        }
+        return MurmurHash2.hash32(str)
     }
 
     override fun hashCode(): Int {

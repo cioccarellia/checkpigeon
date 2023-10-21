@@ -10,12 +10,14 @@ import com.cioccarellia.checkpigeon.search.grad
 
 data class EvalParameters(
     // material
-    val weightGeneralMaterial: Int,
+    val weightGeneralMaterialScale: Float,
+    val weightGeneralMaterialMul: Int,
     val weightOwnMaterial: Int,
     val weightEnemyMaterial: Int,
 
     // position
-    val weightGeneralPosition: Int,
+    val weightGeneralPositionScale: Float,
+    val weightGeneralPositionMul: Int,
     val weightOwnPosition: Int,
     val weightEnemyPosition: Int,
 
@@ -27,17 +29,19 @@ data class EvalParameters(
 
 val stdParams = EvalParameters(
     // material
-    weightGeneralMaterial = 1,
+    weightGeneralMaterialScale = 1F,
+    weightGeneralMaterialMul = 1,
     weightOwnMaterial = 1,
-    weightEnemyMaterial = 2,
+    weightEnemyMaterial = 5,
 
     // position
-    weightGeneralPosition = 1,
+    weightGeneralPositionScale = 1F,
+    weightGeneralPositionMul = 1,
     weightOwnPosition = 1,
     weightEnemyPosition = 1,
 
     // pieces
-    weightPiece1 = 10,
+    weightPiece1 = 20,
     weightPiece2 = 50
 )
 
@@ -76,12 +80,12 @@ fun Eval(state: State, debug: Boolean = false, label: String = ""): Int {
     val ownPositionIncrement = parameters.weightOwnPosition * computeMaterialWeight(parameters, state.board, state.playerColor)
     val enemyPositionIncrement = parameters.weightEnemyPosition * computeMaterialWeight(parameters, state.board, state.playerColor.not())
 
-    val eval = parameters.weightGeneralMaterial * (ownMaterialIncrement - enemyMaterialIncrement)
-                + parameters.weightGeneralPosition * (ownPositionIncrement - enemyPositionIncrement)
+    val eval = (        parameters.weightGeneralMaterialScale * parameters.weightGeneralMaterialMul * (ownMaterialIncrement - enemyMaterialIncrement)
+                    +   parameters.weightGeneralPositionScale * parameters.weightGeneralPositionMul * (ownPositionIncrement - enemyPositionIncrement)).toInt()
 
     if (debug) {
-        println("eval = w1 * (ownMaterial - enemyMaterial) = ${parameters.weightGeneralMaterial} * (${ownMaterialIncrement.grad()} - ${enemyMaterialIncrement.grad(inverse = true)}) = ${(parameters.weightGeneralMaterial * (ownMaterialIncrement - enemyMaterialIncrement)).grad()}")
-        println("     + w2 * (ownPosition - enemyPosition) = ${parameters.weightGeneralPosition} * (${ownPositionIncrement.grad()} - ${enemyPositionIncrement.grad(inverse = true)}) = ${(parameters.weightGeneralPosition * (ownPositionIncrement - enemyPositionIncrement)).grad()}")
+        println("eval = w1 * (ownMaterial - enemyMaterial) = ${parameters.weightGeneralMaterialScale * parameters.weightGeneralMaterialMul} * (${ownMaterialIncrement.grad()} - ${enemyMaterialIncrement.grad(inverse = true)}) = ${(parameters.weightGeneralMaterialScale * parameters.weightGeneralMaterialMul * (ownMaterialIncrement - enemyMaterialIncrement)).toInt().grad()}")
+        println("     + w2 * (ownPosition - enemyPosition) = ${parameters.weightGeneralPositionScale * parameters.weightGeneralPositionMul} * (${ownPositionIncrement.grad()} - ${enemyPositionIncrement.grad(inverse = true)}) = ${(parameters.weightGeneralPositionScale * parameters.weightGeneralPositionMul * (ownPositionIncrement - enemyPositionIncrement)).toInt().grad()}")
         println("     = ${eval.grad()}                                                            " + if (label.isNotBlank()) "[$label]" else "")
     }
 

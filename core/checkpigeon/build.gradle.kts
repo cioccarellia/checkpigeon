@@ -15,6 +15,7 @@ dependencies {
 
     // https://mvnrepository.com/artifact/org.jetbrains.kotlin/kotlin-stdlib-jdk8
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.9.10")
+    implementation("commons-codec:commons-codec:1.16.0")
 }
 
 tasks.test {

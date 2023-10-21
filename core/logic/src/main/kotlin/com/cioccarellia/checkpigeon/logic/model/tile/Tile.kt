@@ -18,4 +18,8 @@ class Tile(
 
     val color: TileColor
         get() = if (coordinate.parity) TileColor.BLACK else TileColor.WHITE
+
+    override fun toString(): String {
+        return "${material}x$color"
+    }
 }

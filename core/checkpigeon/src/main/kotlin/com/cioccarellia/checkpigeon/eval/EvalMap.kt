@@ -38,7 +38,7 @@ fun m1_eval(coordinate: Coordinate, color: TileColor): Int {
 
 
 
-const val P_FACTOR_2 = 2F
+const val P_FACTOR_2 = 0F
 
 const val P = 1
 const val N = 1
