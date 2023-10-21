@@ -3,6 +3,7 @@ package com.cioccarellia.checkpigeon.logic.engine
 import com.cioccarellia.checkpigeon.debug.CustomLogger
 import com.cioccarellia.checkpigeon.ext.findPlayerWithColor
 import com.cioccarellia.checkpigeon.logic.board.Board
+import com.cioccarellia.checkpigeon.logic.console.red
 import com.cioccarellia.checkpigeon.logic.engine.events.GameEvent
 import com.cioccarellia.checkpigeon.logic.engine.game.GameResult
 import com.cioccarellia.checkpigeon.logic.engine.internal.BoardPrinter
@@ -86,7 +87,7 @@ class Engine(
                 status.onMoveRejected(verification.rejectionReason)
 
                 // invalid move
-                println("Invalid move submitted")
+                println("Invalid move submitted".red())
                 verification
             }
         }

@@ -30,19 +30,19 @@ data class EvalParameters(
 val stdParams = EvalParameters(
     // material
     weightGeneralMaterialScale = 1F,
-    weightGeneralMaterialMul = 1,
+    weightGeneralMaterialMul = 2,
     weightOwnMaterial = 1,
     weightEnemyMaterial = 5,
 
     // position
-    weightGeneralPositionScale = 1F,
+    weightGeneralPositionScale = 1.5F,
     weightGeneralPositionMul = 1,
     weightOwnPosition = 1,
     weightEnemyPosition = 1,
 
     // pieces
     weightPiece1 = 20,
-    weightPiece2 = 50
+    weightPiece2 = 60
 )
 
 fun EvalParams(s: State) = stdParams

@@ -1,16 +1,17 @@
 package com.cioccarellia.checkpigeoncli.executors.game
 
+import com.cioccarellia.checkpigeon.eval.Eval
 import com.cioccarellia.checkpigeon.ext.findPlayerWithColor
+import com.cioccarellia.checkpigeon.functions.Evaluation
+import com.cioccarellia.checkpigeon.functions.Result
 import com.cioccarellia.checkpigeon.input.CLICommand
 import com.cioccarellia.checkpigeon.input.CommandParser
 import com.cioccarellia.checkpigeon.input.ParsedMove
-import com.cioccarellia.checkpigeon.logic.console.cyan
-import com.cioccarellia.checkpigeon.logic.console.green
-import com.cioccarellia.checkpigeon.logic.console.red
-import com.cioccarellia.checkpigeon.logic.console.yellow
+import com.cioccarellia.checkpigeon.logic.console.*
 import com.cioccarellia.checkpigeon.logic.engine.Engine
 import com.cioccarellia.checkpigeon.logic.model.tile.TileColor
 import com.cioccarellia.checkpigeon.search.MiniMaxAlphaBeta
+import com.cioccarellia.checkpigeon.search.grad
 import com.cioccarellia.checkpigeon.state
 import com.cioccarellia.checkpigeoncli.commands.Command.CreateGame.GameHumanVsEngine
 import com.cioccarellia.checkpigeoncli.commands.readCLI
@@ -28,9 +29,9 @@ class CliHEGameExecutor(
         command.whitePlayer to command.blackPlayer
     )
 
-    private val enginePlayer = if (command.whitePlayer.alias.lowercase(Locale.getDefault()).contains("ap")) {
+    private val enginePlayer = if (command.whitePlayer.alias.lowercase(Locale.getDefault()).contains("a/p")) {
         TileColor.WHITE
-    } else if (command.blackPlayer.alias.lowercase(Locale.getDefault()).contains("ap")) {
+    } else if (command.blackPlayer.alias.lowercase(Locale.getDefault()).contains("a/p")) {
         TileColor.BLACK
     } else {
         TileColor.entries.random()
@@ -38,7 +39,7 @@ class CliHEGameExecutor(
 
     private fun processInputMove(): CLICommand = with(engine.status.gameStatus) {
         val currentPlayer = engine.players.findPlayerWithColor(turnColor)
-        val input = readCLI("Turn $turnNumber for $turnColor (${currentPlayer.alias}) | command")
+        val input = readCLI("Turn $turnNumber for $turnColor (${currentPlayer.alias}) " + "[human]".red() + " | command")
 
         return@with CommandParser.parseCommand(input, turnColor)
     }
@@ -51,9 +52,9 @@ class CliHEGameExecutor(
 
             if (engine.status.gameStatus.turnColor == enginePlayer) {
                 val currentPlayer = engine.players.findPlayerWithColor(engine.status.gameStatus.turnColor)
-                print("Turn ${engine.status.gameStatus.turnNumber} for ${engine.status.gameStatus.turnColor} (${currentPlayer.alias}) " + "[automatic]".green() + " | command\" > ")
+                print("Turn ${engine.status.gameStatus.turnNumber} for ${engine.status.gameStatus.turnColor} (${currentPlayer.alias}) " + "[automatic]".green() + " | command" +  " [processing] ".magenta() + "> ")
 
-                val move = MiniMaxAlphaBeta(engine.state())
+                val move = MiniMaxAlphaBeta(engine.state(), silent = true)
 
                 if (move == null) {
                     print("Engine produced empty move".red())
@@ -61,7 +62,7 @@ class CliHEGameExecutor(
                 }
 
 
-                println(move.humanMoveNotation().yellow())
+                println(move.humanMoveNotation().green())
 
                 engine.applyMove(move)
                 engine.stdoutBoardCoords(highlights = listOf(move.end))
@@ -72,8 +73,8 @@ class CliHEGameExecutor(
                     is CLICommand.XMove -> when (val xmov = parsedMove.parsedMove) {
                         is ParsedMove.Success -> {
                             engine.applyMove(xmov.move)
-                            engine.stdoutBoardCoords(highlights = listOf(xmov.move.end))
-                            println()
+                            // engine.stdoutBoardCoords(highlights = listOf(xmov.move.end))
+                            // println()
                         }
 
                         is ParsedMove.Failure -> {

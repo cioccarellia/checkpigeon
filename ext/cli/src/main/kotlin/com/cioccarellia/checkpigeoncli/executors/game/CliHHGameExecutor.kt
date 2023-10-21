@@ -6,6 +6,7 @@ import com.cioccarellia.checkpigeon.input.CommandParser
 import com.cioccarellia.checkpigeon.input.ParsedMove
 import com.cioccarellia.checkpigeon.logic.console.cyan
 import com.cioccarellia.checkpigeon.logic.console.red
+import com.cioccarellia.checkpigeon.logic.console.yellow
 import com.cioccarellia.checkpigeon.logic.engine.Engine
 import com.cioccarellia.checkpigeoncli.commands.Command.CreateGame.GameHumanVsHuman
 import com.cioccarellia.checkpigeoncli.commands.readCLI

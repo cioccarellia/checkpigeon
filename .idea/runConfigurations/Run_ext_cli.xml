@@ -2,7 +2,7 @@
   <configuration default="false" name="Run ext/cli" type="JetRunConfigurationType" singleton="false">
     <option name="MAIN_CLASS_NAME" value="com.cioccarellia.checkpigeoncli.LauncherKt" />
     <module name="checkpigeon.ext.cli.main" />
-    <option name="PROGRAM_PARAMETERS" value="play mode=he black=AP white=Boeing" />
+    <option name="PROGRAM_PARAMETERS" value="play mode=he black=AirbusA/P white=Boeing" />
     <shortenClasspath name="NONE" />
     <method v="2">
       <option name="Make" enabled="true" />
