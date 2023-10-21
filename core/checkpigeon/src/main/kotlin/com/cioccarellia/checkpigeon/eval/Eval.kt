@@ -8,18 +8,49 @@ import com.cioccarellia.checkpigeon.model.State
 import com.cioccarellia.checkpigeon.search.grad
 
 
-const val WEIGHT_LVL_1 = 10
-const val WEIGHT_LVL_2 = 50
+data class EvalParameters(
+    // material
+    val weightGeneralMaterial: Int,
+    val weightOwnMaterial: Int,
+    val weightEnemyMaterial: Int,
+
+    // position
+    val weightGeneralPosition: Int,
+    val weightOwnPosition: Int,
+    val weightEnemyPosition: Int,
+
+    // pieces
+    val weightPiece1: Int,
+    val weightPiece2: Int
+)
 
 
-fun computeMaterialIncrement(board: Board, color: TileColor): Int {
+val stdParams = EvalParameters(
+    // material
+    weightGeneralMaterial = 1,
+    weightOwnMaterial = 1,
+    weightEnemyMaterial = 2,
+
+    // position
+    weightGeneralPosition = 1,
+    weightOwnPosition = 1,
+    weightEnemyPosition = 1,
+
+    // pieces
+    weightPiece1 = 10,
+    weightPiece2 = 50
+)
+
+fun EvalParams(s: State) = stdParams
+
+fun computeMaterialIncrement(parameters: EvalParameters, board: Board, color: TileColor): Int {
     val ownPoints1 = board.countPiecesWithTypeAndColor<Material.Dama>(color)
     val ownPoints2 = board.countPiecesWithTypeAndColor<Material.Damone>(color)
 
-    return ownPoints1 * WEIGHT_LVL_1 + ownPoints2 * WEIGHT_LVL_2
+    return ownPoints1 * parameters.weightPiece1 + ownPoints2 * parameters.weightPiece2
 }
 
-fun computeMaterialWeight(board: Board, color: TileColor): Int {
+fun computeMaterialWeight(parameters: EvalParameters, board: Board, color: TileColor): Int {
     var accumulator = 0
 
     board.enumPieces(color).forEach {
@@ -36,22 +67,23 @@ fun computeMaterialWeight(board: Board, color: TileColor): Int {
 
 
 
-
 fun Eval(state: State, debug: Boolean = false, label: String = ""): Int {
-    val ownMaterialIncrement = computeMaterialIncrement(state.board, state.playerColor)
-    val enemyMaterialIncrement = computeMaterialIncrement(state.board, state.playerColor.not())
+    val parameters = EvalParams(state)
 
-    val ownPositionIncrement = computeMaterialWeight(state.board, state.playerColor)
-    val enemyPositionIncrement = computeMaterialWeight(state.board, state.playerColor.not())
+    val ownMaterialIncrement = parameters.weightOwnMaterial * computeMaterialIncrement(parameters, state.board, state.playerColor)
+    val enemyMaterialIncrement = parameters.weightEnemyMaterial * computeMaterialIncrement(parameters, state.board, state.playerColor.not())
 
-    val eval = ownMaterialIncrement - enemyMaterialIncrement + ownPositionIncrement - enemyPositionIncrement
+    val ownPositionIncrement = parameters.weightOwnPosition * computeMaterialWeight(parameters, state.board, state.playerColor)
+    val enemyPositionIncrement = parameters.weightEnemyPosition * computeMaterialWeight(parameters, state.board, state.playerColor.not())
+
+    val eval = parameters.weightGeneralMaterial * (ownMaterialIncrement - enemyMaterialIncrement)
+                + parameters.weightGeneralPosition * (ownPositionIncrement - enemyPositionIncrement)
 
     if (debug) {
-        println("eval = ownMaterial - enemyMaterial = ${ownMaterialIncrement.grad()} - ${enemyMaterialIncrement.grad(inverse = true)} = ${(ownMaterialIncrement - enemyMaterialIncrement).grad()}")
-        println("     + ownPosition - enemyPosition = ${ownPositionIncrement.grad()} - ${enemyPositionIncrement.grad(inverse = true)} = ${(ownPositionIncrement - enemyPositionIncrement).grad()}")
+        println("eval = w1 * (ownMaterial - enemyMaterial) = ${parameters.weightGeneralMaterial} * (${ownMaterialIncrement.grad()} - ${enemyMaterialIncrement.grad(inverse = true)}) = ${(parameters.weightGeneralMaterial * (ownMaterialIncrement - enemyMaterialIncrement)).grad()}")
+        println("     + w2 * (ownPosition - enemyPosition) = ${parameters.weightGeneralPosition} * (${ownPositionIncrement.grad()} - ${enemyPositionIncrement.grad(inverse = true)}) = ${(parameters.weightGeneralPosition * (ownPositionIncrement - enemyPositionIncrement)).grad()}")
         println("     = ${eval.grad()}                                                            " + if (label.isNotBlank()) "[$label]" else "")
     }
 
     return eval
-
 }

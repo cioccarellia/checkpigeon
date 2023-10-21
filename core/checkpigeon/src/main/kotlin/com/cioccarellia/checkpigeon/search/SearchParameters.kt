@@ -9,9 +9,9 @@ object SearchParameters {
     const val MAX = +1_000_000
     const val MIN = -1_000_000
 
-    const val MAX_DEPTH = 4
+    const val MAX_DEPTH = 5
 
-    const val RANDOMIZED = false
+    const val RANDOMIZED = true
 
     val seed: () -> Random = {
         SecureRandom()

@@ -108,7 +108,9 @@ fun MiniMaxAlphaBeta(state: State): Move? {
         dbg_tree(0, utility, player, move)
 
         Eval((state), debug = true, "previousEval")
-        Eval((Result(state, move!!)), debug = true, "currentEval")
+        if (move != null) {
+            Eval((Result(state, move)), debug = true, "currentEval")
+        }
         println("END_DBG_MINIMAX")
     }
 
