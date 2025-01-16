@@ -2,6 +2,7 @@
   <dictionary name="cioccarellia">
     <words>
       <w>capturer</w>
+      <w>checkpigeon</w>
       <w>coord</w>
       <w>dama</w>
       <w>damone</w>
@@ -9,6 +10,7 @@
       <w>movetext</w>
       <w>tagify</w>
       <w>walkthrough</w>
+      <w>xtra</w>
     </words>
   </dictionary>
 </component>

@@ -33,10 +33,8 @@ fun MaxValue(state: State, depth: Int, _alpha: Int, _beta: Int): Pair<Int, Move?
         actions = actions.shuffled(SearchParameters.seed())
     }
 
-    actions = actions.sortedBy { it.moveType == MoveType.Capture }
-
     for (a in actions) {
-        if (lookup.containsKey(state.board.hash() to state.playerColor)) {
+        if (SearchParameters.USE_LOOKUP_TABLE && lookup.containsKey(state.board.hash() to state.playerColor)) {
             cached++
             return lookup[state.board.hash() to state.playerColor]!!
         }
@@ -51,7 +49,9 @@ fun MaxValue(state: State, depth: Int, _alpha: Int, _beta: Int): Pair<Int, Move?
         }
 
         if (v1 >= _beta) {
-            lookup[state.board.hash() to state.playerColor] = v1 to move!!
+            if (SearchParameters.USE_LOOKUP_TABLE) {
+                lookup[state.board.hash() to state.playerColor] = v1 to move!!
+            }
             return v1 to move
         }
     }
@@ -60,7 +60,7 @@ fun MaxValue(state: State, depth: Int, _alpha: Int, _beta: Int): Pair<Int, Move?
         dbg_tree(depth, v1, state.playerColor, move)
     }
 
-    if (move != null) {
+    if (SearchParameters.USE_LOOKUP_TABLE && move != null) {
         lookup[state.board.hash() to state.playerColor] = v1 to move
     }
 
@@ -85,10 +85,8 @@ fun MinValue(state: State, depth: Int, _alpha: Int, _beta: Int): Pair<Int, Move?
         actions = actions.shuffled(SearchParameters.seed())
     }
 
-    actions = actions.sortedBy { it.moveType == MoveType.Capture }
-
     for (a in actions) {
-        if (lookup.containsKey(state.board.hash() to state.playerColor)) {
+        if (SearchParameters.USE_LOOKUP_TABLE && lookup.containsKey(state.board.hash() to state.playerColor)) {
             cached++;
             return lookup[state.board.hash() to state.playerColor]!!
         }
@@ -104,7 +102,9 @@ fun MinValue(state: State, depth: Int, _alpha: Int, _beta: Int): Pair<Int, Move?
         }
 
         if (v1 <= _alpha) {
-            lookup[state.board.hash() to state.playerColor] = v1 to move!!
+            if (SearchParameters.USE_LOOKUP_TABLE) {
+                lookup[state.board.hash() to state.playerColor] = v1 to move!!
+            }
             return v1 to move
         }
     }
@@ -114,7 +114,7 @@ fun MinValue(state: State, depth: Int, _alpha: Int, _beta: Int): Pair<Int, Move?
         dbg_tree(depth, v1, state.playerColor, move)
     }
 
-    if (move != null) {
+    if (SearchParameters.USE_LOOKUP_TABLE && move != null) {
         lookup[state.board.hash() to state.playerColor] = v1 to move
     }
     return v1 to move
@@ -123,7 +123,8 @@ fun MinValue(state: State, depth: Int, _alpha: Int, _beta: Int): Pair<Int, Move?
 
 fun MiniMaxAlphaBeta(state: State, silent: Boolean = false): Move? {
     val hash = state.board.hash()
-    if (lookup.containsKey(hash to state.playerColor)) {
+
+    if (SearchParameters.USE_LOOKUP_TABLE && lookup.containsKey(hash to state.playerColor)) {
         if (!silent) {
             println("Instant lookup for hash $hash, 0 nodes processed")
 
@@ -141,7 +142,7 @@ fun MiniMaxAlphaBeta(state: State, silent: Boolean = false): Move? {
     val player = ToMove(state)
     val (evaluation, move) = MaxValue(state, SearchParameters.MAX_DEPTH, SearchParameters.MIN, SearchParameters.MAX)
 
-    if (move != null) {
+    if (SearchParameters.USE_LOOKUP_TABLE && move != null) {
         if (!silent) {
             println("Saving master hash $hash to lookup")
         }
@@ -160,7 +161,7 @@ fun MiniMaxAlphaBeta(state: State, silent: Boolean = false): Move? {
 
             Eval((state), debug = true, "previousEval (own)")
             if (move != null) {
-                Eval(Result(state, move), debug = true, "currentEval (enemy)")
+                Eval(Result(state.apply { this.playerColor = playerColor.not() }, move), debug = true, "currentEval (own)")
             }
 
             println("nodes processed                [in this run]: $nodes nodes")

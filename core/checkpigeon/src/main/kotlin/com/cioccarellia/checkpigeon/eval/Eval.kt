@@ -23,29 +23,57 @@ data class EvalParameters(
 
     // pieces
     val weightPiece1: Int,
-    val weightPiece2: Int
+    val weightPiece2: Int,
+
+    // boostrs
+    val granularEnemyMaterialLeft: Int,
 )
 
 
 val stdParams = EvalParameters(
     // material
     weightGeneralMaterialScale = 1F,
-    weightGeneralMaterialMul = 2,
+    weightGeneralMaterialMul = 1,
     weightOwnMaterial = 1,
-    weightEnemyMaterial = 5,
+    weightEnemyMaterial = 1,
 
     // position
-    weightGeneralPositionScale = 1.5F,
+    weightGeneralPositionScale = .5F,
+    weightGeneralPositionMul = 0,
+    weightOwnPosition = 1,
+    weightEnemyPosition = 1,
+
+    // pieces
+    weightPiece1 = 1,
+    weightPiece2 = 5,
+
+    // boost
+    granularEnemyMaterialLeft = 0,
+)
+
+
+val xtraParams = EvalParameters(
+    // material
+    weightGeneralMaterialScale = 1F,
+    weightGeneralMaterialMul = 1,
+    weightOwnMaterial = 1,
+    weightEnemyMaterial = 1,
+
+    // position
+    weightGeneralPositionScale = 1F,
     weightGeneralPositionMul = 1,
     weightOwnPosition = 1,
     weightEnemyPosition = 1,
 
     // pieces
-    weightPiece1 = 20,
-    weightPiece2 = 60
+    weightPiece1 = 10,
+    weightPiece2 = 100,
+
+    // boost
+    granularEnemyMaterialLeft = 0,
 )
 
-fun EvalParams(s: State) = stdParams
+fun EvalParams(s: State) = stdParams // if (s.playerColor == TileColor.WHITE) stdParams else xtraParams
 
 fun computeMaterialIncrement(parameters: EvalParameters, board: Board, color: TileColor): Int {
     val ownPoints1 = board.countPiecesWithTypeAndColor<Material.Dama>(color)
@@ -69,8 +97,6 @@ fun computeMaterialWeight(parameters: EvalParameters, board: Board, color: TileC
 }
 
 
-
-
 fun Eval(state: State, debug: Boolean = false, label: String = ""): Int {
     val parameters = EvalParams(state)
 
@@ -80,12 +106,44 @@ fun Eval(state: State, debug: Boolean = false, label: String = ""): Int {
     val ownPositionIncrement = parameters.weightOwnPosition * computeMaterialWeight(parameters, state.board, state.playerColor)
     val enemyPositionIncrement = parameters.weightEnemyPosition * computeMaterialWeight(parameters, state.board, state.playerColor.not())
 
-    val eval = (        parameters.weightGeneralMaterialScale * parameters.weightGeneralMaterialMul * (ownMaterialIncrement - enemyMaterialIncrement)
-                    +   parameters.weightGeneralPositionScale * parameters.weightGeneralPositionMul * (ownPositionIncrement - enemyPositionIncrement)).toInt()
+
+    fun attributeEnemyLeftoverIncrement(params: EvalParameters, piece1: Int, piece2: Int): Int {
+        val initialN = 12
+
+        return when (val leftover = initialN - (piece1 + piece2)) {
+            1 -> leftover * params.granularEnemyMaterialLeft * 4
+            in 1..2 -> leftover * params.granularEnemyMaterialLeft * 3
+            in 3..5 -> leftover * params.granularEnemyMaterialLeft * 2
+            in 6..8 -> leftover * params.granularEnemyMaterialLeft * 1
+            in 9..11 -> leftover * params.granularEnemyMaterialLeft * 1
+            else -> 0
+        }
+    }
+
+    // val ownPiece1 = state.board.countPiecesWithTypeAndColor<Material.Dama>(state.playerColor)
+    // val ownPiece2 = state.board.countPiecesWithTypeAndColor<Material.Damone>(state.playerColor)
+
+    val enemyPiece1 = state.board.countPiecesWithTypeAndColor<Material.Dama>(state.playerColor.not())
+    val enemyPiece2 = state.board.countPiecesWithTypeAndColor<Material.Damone>(state.playerColor.not())
+
+    // val selfTotalPieces = ownPiece1 + ownPiece2
+    val enemyTotalPieces = enemyPiece1 + enemyPiece2
+
+
+
+    var eval = (        parameters.weightGeneralMaterialScale * parameters.weightGeneralMaterialMul * (ownMaterialIncrement - enemyMaterialIncrement)
+                    +   parameters.weightGeneralPositionScale * parameters.weightGeneralPositionMul * (ownPositionIncrement - enemyPositionIncrement)
+                    +   attributeEnemyLeftoverIncrement(parameters, enemyPiece1, enemyPiece2)
+    ).toInt()
+
+
+    eval = 10 * ownMaterialIncrement - 9 * enemyMaterialIncrement
+
 
     if (debug) {
         println("eval = w1 * (ownMaterial - enemyMaterial) = ${parameters.weightGeneralMaterialScale * parameters.weightGeneralMaterialMul} * (${ownMaterialIncrement.grad()} - ${enemyMaterialIncrement.grad(inverse = true)}) = ${(parameters.weightGeneralMaterialScale * parameters.weightGeneralMaterialMul * (ownMaterialIncrement - enemyMaterialIncrement)).toInt().grad()}")
         println("     + w2 * (ownPosition - enemyPosition) = ${parameters.weightGeneralPositionScale * parameters.weightGeneralPositionMul} * (${ownPositionIncrement.grad()} - ${enemyPositionIncrement.grad(inverse = true)}) = ${(parameters.weightGeneralPositionScale * parameters.weightGeneralPositionMul * (ownPositionIncrement - enemyPositionIncrement)).toInt().grad()}")
+        println("     + enemyLeftoverMaterialBoost(dame=$enemyPiece1, damoni=$enemyPiece2) = ${(attributeEnemyLeftoverIncrement(parameters, enemyPiece1, enemyPiece2)).grad()}")
         println("     = ${eval.grad()}                                                            " + if (label.isNotBlank()) "[$label]" else "")
     }
 

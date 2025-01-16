@@ -5,6 +5,6 @@ import com.cioccarellia.checkpigeon.logic.model.tile.TileColor
 
 data class State(
     val board: Board,
-    val playerColor: TileColor,
+    var playerColor: TileColor,
     val isGameOver: Boolean
 )
